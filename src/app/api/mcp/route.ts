@@ -138,7 +138,7 @@ export async function GET() {
   return NextResponse.json({
     status: "online",
     server: SERVER_INFO,
-    documentation: "https://your-domain.vercel.app",
+    documentation: "https://scoutpro.app",
     tools: MCP_TOOLS.map((t) => ({ name: t.name, description: t.description })),
   });
 }
@@ -146,7 +146,7 @@ export async function GET() {
 // POST: Standard JSON-RPC 2.0 MCP Dispatcher
 export async function POST(req: NextRequest) {
   try {
-    // 1. Authentication Check: If MCP_API_KEY is configured in Vercel, enforce it
+    // 1. Authentication Check: If MCP_API_KEY is configured in environment, enforce it
     const expectedKey = process.env.MCP_API_KEY;
     if (expectedKey) {
       const authHeader = req.headers.get("x-api-key") || req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");

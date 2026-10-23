@@ -3,16 +3,36 @@
 import { useState } from "react";
 
 export default function HomePage() {
+  const [activeMainModule, setActiveMainModule] = useState<"products" | "shops" | "keywords" | "calculator" | "mcp">("products");
   const [activeViewTab, setActiveViewTab] = useState<"search" | "listing" | "shop">("search");
   const [activeMcpClient, setActiveMcpClient] = useState<"claude" | "cursor" | "python" | "curl">("claude");
   const [copiedMcp, setCopiedMcp] = useState(false);
   const [copiedTags, setCopiedTags] = useState(false);
   const [copiedPrompt, setCopiedPrompt] = useState(false);
 
-  // Table sorting / filtering state
+  // Table sorting / filtering state for Products
   const [searchFilter, setSearchFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<"all" | "digital" | "physical">("all");
 
+  // Shop Analyzer State (EverBee Parity: 5,065,059 shops)
+  const [shopSearch, setShopSearch] = useState("");
+  const [shopFilterPreset, setShopFilterPreset] = useState<"all" | "top" | "fastest" | "digital">("all");
+
+  // Keyword Research State (EverBee Parity: 60,902,071 keywords)
+  const [keywordInput, setKeywordInput] = useState("");
+  const [keywordFilter, setKeywordFilter] = useState("");
+
+  // Profit Calculator State (EverBee Parity: Standard & Advanced)
+  const [calcMode, setCalcMode] = useState<"standard" | "advanced">("standard");
+  const [calcListedPrice, setCalcListedPrice] = useState<number>(14.99);
+  const [calcShippingPrice, setCalcShippingPrice] = useState<number>(0.00);
+  const [calcDiscountPct, setCalcDiscountPct] = useState<number>(0);
+  const [calcItemCost, setCalcItemCost] = useState<number>(0.00);
+  const [calcShippingCost, setCalcShippingCost] = useState<number>(0.00);
+  const [calcOffsiteAds, setCalcOffsiteAds] = useState<"none" | "12" | "15">("none");
+  const [calcPaymentMethod, setCalcPaymentMethod] = useState<"etsy" | "paypal">("etsy");
+
+  // Sample Products Data
   const sampleProducts = [
     {
       id: "1",
@@ -26,8 +46,10 @@ export default function HomePage() {
       moGross: 7195,
       netTakeHome: 13.12,
       marginPct: 87,
+      sold24h: 18,
       age: "42 days",
       reviews: 831,
+      reviews30d: 38,
       inCart: 18,
       tags: ["adhd planner", "digital planner", "goodnotes template", "focus tracker", "adhd routine"]
     },
@@ -43,8 +65,10 @@ export default function HomePage() {
       moGross: 3465,
       netTakeHome: 18.42,
       marginPct: 88,
+      sold24h: 6,
       age: "18 days",
       reviews: 94,
+      reviews30d: 14,
       inCart: 11,
       tags: ["dispatch template", "freight bookkeeping", "trucking spreadsheet", "courier log", "excel book"]
     },
@@ -60,8 +84,10 @@ export default function HomePage() {
       moGross: 9920,
       netTakeHome: 22.85,
       marginPct: 71,
+      sold24h: 12,
       age: "1.4 years",
       reviews: 1420,
+      reviews30d: 28,
       inCart: 24,
       tags: ["wedding vow book", "his and hers vows", "foil vow booklet", "keepsake journal", "wedding gift"]
     },
@@ -77,8 +103,10 @@ export default function HomePage() {
       moGross: 3335,
       netTakeHome: 10.05,
       marginPct: 87,
+      sold24h: 9,
       age: "3 months",
       reviews: 312,
+      reviews30d: 22,
       inCart: 14,
       tags: ["mental health journal", "self care planner", "canva template", "wellness tracker", "digital book"]
     },
@@ -94,11 +122,41 @@ export default function HomePage() {
       moGross: 11470,
       netTakeHome: 12.80,
       marginPct: 69,
+      sold24h: 21,
       age: "3.8 years",
       reviews: 3890,
+      reviews30d: 45,
       inCart: 35,
       tags: ["leather keychain", "coordinates gift", "personalized key", "anniversary for him", "custom leather"]
     }
+  ];
+
+  // Sample Shop Analyzer Database (EverBee Parity: 5,065,059 shops)
+  const sampleShops = [
+    { name: "OhanaJewelsShop", category: "Physical Jewelry", sales: 483785, rev: 9675700, moSales: 4120, moRev: 82400, age: "117 Mo.", score: 4.83, isTop: true, isGrowing: false, isDigital: false },
+    { name: "BloomOwl", category: "Digital Art & SVG", sales: 296921, rev: 1484605, moSales: 3890, moRev: 19450, age: "124 Mo.", score: 4.94, isTop: true, isGrowing: true, isDigital: true },
+    { name: "SEmbroideredBoutique", category: "Apparel & Patch", sales: 310070, rev: 6201400, moSales: 2410, moRev: 48200, age: "164 Mo.", score: 4.84, isTop: true, isGrowing: false, isDigital: false },
+    { name: "PerluxGold", category: "Handmade Gold", sales: 49067, rev: 2453350, moSales: 890, moRev: 44500, age: "69 Mo.", score: 4.46, isTop: false, isGrowing: true, isDigital: false },
+    { name: "mrcwoodproducts", category: "Laser Woodcraft", sales: 265754, rev: 7972620, moSales: 1950, moRev: 58500, age: "202 Mo.", score: 4.92, isTop: true, isGrowing: false, isDigital: false },
+    { name: "Ringcrush", category: "Raw Gemstone Rings", sales: 174474, rev: 8723700, moSales: 1620, moRev: 81000, age: "123 Mo.", score: 4.80, isTop: false, isGrowing: false, isDigital: false },
+    { name: "CustomizeTheCharms", category: "Shoe Accessories", sales: 99037, rev: 495185, moSales: 2150, moRev: 10750, age: "139 Mo.", score: 4.65, isTop: false, isGrowing: true, isDigital: false },
+    { name: "CatchThisMoment", category: "Digital Planners", sales: 59214, rev: 888210, moSales: 2840, moRev: 42600, age: "145 Mo.", score: 4.95, isTop: false, isGrowing: true, isDigital: true },
+    { name: "RenaissanceJewelry", category: "Vintage Rings", sales: 33818, rev: 1690900, moSales: 410, moRev: 20500, age: "207 Mo.", score: 4.95, isTop: false, isGrowing: false, isDigital: false },
+    { name: "AestheticStudioUK", category: "Digital GoodNotes", sales: 14290, rev: 214350, moSales: 980, moRev: 14690, age: "14 Mo.", score: 4.98, isTop: false, isGrowing: true, isDigital: true }
+  ];
+
+  // Sample Keyword Database (EverBee Parity: 60,902,071 keywords)
+  const sampleKeywords = [
+    { keyword: "wooden bird desktop", volume: 26375, comp: 1420, score: 6240, tags: "wooden bird desktop, bird figurine, hand carved bird", isSafe: true },
+    { keyword: "adhd daily routine", volume: 24935, comp: 1240, score: 5890, tags: "adhd planner, adhd daily routine, goodnotes planner", isSafe: true },
+    { keyword: "courier freight bookkeeping", volume: 24935, comp: 412, score: 7120, tags: "dispatch spreadsheet, freight tracking, trucking book", isSafe: true },
+    { keyword: "wedding vow book foil", volume: 24934, comp: 3981, score: 4850, tags: "wedding vow books, vow booklets, foil embossed", isSafe: true },
+    { keyword: "personalizing gifts", volume: 24835, comp: 7337801, score: 120, tags: "personalized gifts, custom name gift, custom gift", isSafe: false },
+    { keyword: "gift personalized", volume: 24833, comp: 7337703, score: 110, tags: "personalized gift, anniversary gift, custom keychain", isSafe: false },
+    { keyword: "personable gifts", volume: 24832, comp: 3981, score: 6240, tags: "thoughtful gifts, custom leather gift, gift for mom", isSafe: true },
+    { keyword: "personal gifting", volume: 24832, comp: 258685, score: 850, tags: "personal gift, handmade gift, unique gift ideas", isSafe: true },
+    { keyword: "personalize gifts", volume: 24823, comp: 7334382, score: 100, tags: "custom personalized, engrave name, monogram gift", isSafe: false },
+    { keyword: "gift personal", volume: 24797, comp: 257533, score: 860, tags: "customizable gift, custom engraved, personalized item", isSafe: true }
   ];
 
   const filteredProducts = sampleProducts.filter((p) => {
@@ -107,6 +165,31 @@ export default function HomePage() {
     if (categoryFilter === "physical") return matchesQuery && !p.isDigital;
     return matchesQuery;
   });
+
+  const filteredShops = sampleShops.filter((s) => {
+    const matchesQuery = s.name.toLowerCase().includes(shopSearch.toLowerCase()) || s.category.toLowerCase().includes(shopSearch.toLowerCase());
+    if (shopFilterPreset === "top") return matchesQuery && s.isTop;
+    if (shopFilterPreset === "fastest") return matchesQuery && s.isGrowing;
+    if (shopFilterPreset === "digital") return matchesQuery && s.isDigital;
+    return matchesQuery;
+  });
+
+  const filteredKeywords = sampleKeywords.filter((k) => {
+    return k.keyword.toLowerCase().includes(keywordFilter.toLowerCase());
+  });
+
+  // Profit Calculator Engine Simulation
+  const effectiveRetail = Math.max(0, calcListedPrice * (1 - calcDiscountPct / 100));
+  const totalCustomerPaid = effectiveRetail + calcShippingPrice;
+  const listingFee = 0.20;
+  const txFee = totalCustomerPaid * 0.065;
+  const procFee = calcPaymentMethod === "etsy" ? (totalCustomerPaid * 0.03 + 0.25) : (totalCustomerPaid * 0.0349 + 0.49);
+  const adsFeePct = calcOffsiteAds === "15" ? 0.15 : (calcOffsiteAds === "12" ? 0.12 : 0.0);
+  const adsFee = totalCustomerPaid * adsFeePct;
+  const totalEtsyFees = listingFee + txFee + procFee + adsFee;
+  const totalCosts = calcItemCost + calcShippingCost;
+  const netProfit = totalCustomerPaid - totalEtsyFees - totalCosts;
+  const netMarginPct = totalCustomerPaid > 0 ? Math.round((netProfit / totalCustomerPaid) * 100) : 0;
 
   const sampleTags = [
     "adhd planner",
@@ -152,7 +235,7 @@ export default function HomePage() {
   const claudeConfig = JSON.stringify({
     mcpServers: {
       "etsy-niche-scout": {
-        url: "https://etsy-saas-web.vercel.app/api/mcp"
+        url: "https://scoutpro.app/api/mcp"
       }
     }
   }, null, 2);
@@ -161,14 +244,14 @@ export default function HomePage() {
     mcpServers: {
       "etsy-scout": {
         command: "npx",
-        args: ["-y", "mcp-remote", "https://etsy-saas-web.vercel.app/api/mcp"]
+        args: ["-y", "mcp-remote", "https://scoutpro.app/api/mcp"]
       }
     }
   }, null, 2);
 
   const pythonConfig = `import requests
 
-API_URL = "https://etsy-saas-web.vercel.app/api/mcp"
+API_URL = "https://scoutpro.app/api/mcp"
 payload = {
     "jsonrpc": "2.0",
     "id": 1,
@@ -181,12 +264,33 @@ payload = {
 response = requests.post(API_URL, json=payload)
 print(response.json()["result"])`;
 
-  const curlConfig = `curl -X POST https://etsy-saas-web.vercel.app/api/mcp \\
+  const curlConfig = `curl -X POST https://scoutpro.app/api/mcp \\
   -H "Content-Type: application/json" \\
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"etsy_keyword_scout","arguments":{"query":"wooden bird figurine"}}}'`;
 
   return (
     <div className="flex flex-col min-h-screen bg-[#fafafa] text-[#09090b]">
+      {/* 0. Top EverBee Parity MCP Announcement Banner */}
+      <aside aria-label="Announcement" className="bg-gradient-to-r from-zinc-900 via-zinc-950 to-zinc-900 text-white text-xs py-2 px-4 border-b border-zinc-800">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px] border border-emerald-500/30">
+              NEW
+            </span>
+            <span className="font-medium text-zinc-200">
+              ScoutPro Research MCP is live: Ask Claude, Cursor, or your AI assistant for live shop, listing, and keyword data with ZERO paywalls.
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setActiveMainModule("mcp")}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#ea580c] hover:bg-[#c2410c] text-white font-semibold text-xs transition-colors"
+          >
+            Connect MCP Server &rarr;
+          </button>
+        </div>
+      </aside>
+
       {/* 1. Header Navigation */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-black/[0.08]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -206,11 +310,53 @@ print(response.json()["result"])`;
             </div>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-zinc-600">
-            <a href="#views" className="hover:text-zinc-950 transition-colors">3 Canonical Views</a>
-            <a href="#table" className="hover:text-zinc-950 transition-colors">Product Analytics</a>
-            <a href="#claude" className="hover:text-zinc-950 transition-colors">Claude Desktop MCP</a>
-            <a href="#compare" className="hover:text-zinc-950 transition-colors">Truth Matrix</a>
+          {/* Core Module Navigation (EverBee SaaS Parity) */}
+          <nav className="hidden lg:flex items-center gap-1 p-1 bg-zinc-100 rounded-xl text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setActiveMainModule("products")}
+              className={`px-3 py-1.5 rounded-lg transition-all ${
+                activeMainModule === "products" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              Product Analytics
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveMainModule("shops")}
+              className={`px-3 py-1.5 rounded-lg transition-all ${
+                activeMainModule === "shops" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              Shop Analyzer (5M)
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveMainModule("keywords")}
+              className={`px-3 py-1.5 rounded-lg transition-all ${
+                activeMainModule === "keywords" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              Keyword Research (60M)
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveMainModule("calculator")}
+              className={`px-3 py-1.5 rounded-lg transition-all ${
+                activeMainModule === "calculator" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              Profit Calculator
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveMainModule("mcp")}
+              className={`px-3 py-1.5 rounded-lg transition-all ${
+                activeMainModule === "mcp" ? "bg-zinc-900 text-white shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+              }`}
+            >
+              Research MCP
+            </button>
           </nav>
 
           <div className="flex items-center gap-3">
@@ -230,50 +376,724 @@ print(response.json()["result"])`;
       </header>
 
       {/* 2. Hero Section (Thesis Viewport) */}
-      <section className="pt-16 pb-14 border-b border-black/[0.06] bg-white">
+      <section className="pt-12 pb-10 border-b border-black/[0.06] bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-xs font-medium text-zinc-800 mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-100 border border-zinc-200 text-xs font-medium text-zinc-800 mb-5">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            Zero $49/mo Paywalls · 100% Free Client-Side Speed · Remote MCP Connected
+            100% Unlocked Data · Zero \$49/mo Lock Gates · Native Model Context Protocol
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-zinc-950 leading-[1.1] mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-950 leading-[1.15] mb-5">
             Real Sales. True Take-Home Cash. Unmask What Sells on Etsy in Seconds.
           </h1>
 
-          <p className="max-w-3xl mx-auto text-lg text-zinc-600 leading-relaxed mb-8">
-            The high-density Etsy product research suite engineered for 2026. Spot low-competition breakout listings, extract 13 pre-validated tags, calculate net bank deposits after all 4 Etsy fees, and connect Claude Desktop for autonomous research.
+          <p className="max-w-3xl mx-auto text-base text-zinc-600 leading-relaxed mb-6">
+            The championship Etsy research suite engineered for 2026. Spot low-competition breakout listings, audit 5,065,059 shops, mine 60,902,071 keywords, simulate exact take-home cash after all Etsy deductions, and connect Claude or Cursor via open MCP.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 mb-10">
-            <a
-              href="#views"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#ea580c] text-white font-semibold text-sm hover:bg-[#c2410c] transition-all shadow-sm"
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => setActiveMainModule("shops")}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#ea580c] text-white font-semibold text-xs hover:bg-[#c2410c] transition-all shadow-sm"
             >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect width="18" height="18" x="3" y="3" rx="2" />
-                <line x1="3" x2="21" y1="9" y2="9" />
-                <line x1="9" x2="9" y1="21" y2="9" />
-              </svg>
-              See the 3 Canonical Views
-            </a>
-
-            <a
-              href="#claude"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-zinc-100 text-zinc-900 border border-zinc-200 font-semibold text-sm hover:bg-zinc-200 transition-all"
+              Explore Shop Analyzer (5M Shops)
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveMainModule("keywords")}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-100 text-zinc-900 border border-zinc-200 font-semibold text-xs hover:bg-zinc-200 transition-all"
             >
-              <svg className="w-4 h-4 text-zinc-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 17l6-6-6-6" />
-                <path d="M12 19h8" />
-              </svg>
-              See Claude Desktop MCP in Action
-            </a>
+              Mine Keywords (60M Database)
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveMainModule("calculator")}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-100 text-zinc-900 border border-zinc-200 font-semibold text-xs hover:bg-zinc-200 transition-all"
+            >
+              Simulate Net Profit
+            </button>
           </div>
         </div>
       </section>
 
-      {/* 3. The 3 Canonical Views (Real-World Extension Showcase) */}
-      <section id="views" className="py-16 border-b border-black/[0.06] bg-[#fafafa]">
+      {/* 3. DYNAMIC MAIN MODULE SWITCHER */}
+      <main className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-1">
+        {/* ========================================================================= */}
+        {/* MODULE 1: PRODUCT ANALYTICS */}
+        {/* ========================================================================= */}
+        {activeMainModule === "products" && (
+          <div className="space-y-8">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <div className="text-xs font-bold text-[#ea580c] uppercase tracking-wider mb-1">Module 1 · Search &amp; Listing Explorer</div>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-950">
+                  Live Product Analytics Table
+                </h2>
+                <p className="text-xs text-zinc-600">
+                  High-density research benchmarking real product performance with true net bank deposits.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <input
+                  type="text"
+                  placeholder="Filter by title or shop..."
+                  value={searchFilter}
+                  onChange={(e) => setSearchFilter(e.target.value)}
+                  className="px-3 py-1.5 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400 w-52 bg-white"
+                />
+
+                <div className="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg text-xs font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => setCategoryFilter("all")}
+                    className={`px-2.5 py-1 rounded-md transition-all ${categoryFilter === "all" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+                  >
+                    All
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCategoryFilter("digital")}
+                    className={`px-2.5 py-1 rounded-md transition-all ${categoryFilter === "digital" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+                  >
+                    Digital
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCategoryFilter("physical")}
+                    className={`px-2.5 py-1 rounded-md transition-all ${categoryFilter === "physical" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+                  >
+                    Physical
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="scout-surface rounded-2xl overflow-hidden bg-white border border-zinc-200 shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs tnum">
+                  <thead>
+                    <tr className="bg-zinc-50 border-b border-zinc-200 uppercase font-semibold text-zinc-500 text-[11px]">
+                      <th className="py-3 px-4">Product &amp; Shop</th>
+                      <th className="py-3 px-3">Format</th>
+                      <th className="py-3 px-3 text-right">Price</th>
+                      <th className="py-3 px-3 text-right">Mo. Sales</th>
+                      <th className="py-3 px-3 text-right">Mo. Gross</th>
+                      <th className="py-3 px-3 text-right text-emerald-700 font-bold">Net Bank Cash</th>
+                      <th className="py-3 px-3 text-right text-rose-600 font-bold">24h Sold</th>
+                      <th className="py-3 px-3 text-right">Age</th>
+                      <th className="py-3 px-3 text-right">Reviews (30d)</th>
+                      <th className="py-3 px-3 text-right">In-Cart</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-200/80">
+                    {filteredProducts.map((p) => (
+                      <tr key={p.id} className="hover:bg-zinc-50/80 transition-colors">
+                        <td className="py-3 px-4 font-medium text-zinc-900 max-w-xs">
+                          <div className="truncate font-bold">{p.title}</div>
+                          <div className="text-[11px] text-zinc-500 font-normal">{p.shop} · {p.shopSales} sales</div>
+                        </td>
+                        <td className="py-3 px-3">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                            p.isDigital ? "bg-indigo-50 text-indigo-700 border border-indigo-200" : "bg-amber-50 text-amber-700 border border-amber-200"
+                          }`}>
+                            {p.format}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 text-right font-bold text-zinc-900">${p.price.toFixed(2)}</td>
+                        <td className="py-3 px-3 text-right font-medium text-zinc-700">~{p.moSales}/mo</td>
+                        <td className="py-3 px-3 text-right text-zinc-600">${p.moGross.toLocaleString()}</td>
+                        <td className="py-3 px-3 text-right font-bold text-emerald-600">
+                          ${p.netTakeHome.toFixed(2)} <span className="text-[10px] text-emerald-700 font-semibold">({p.marginPct}%)</span>
+                        </td>
+                        <td className="py-3 px-3 text-right font-bold text-rose-600">
+                          {p.sold24h > 0 ? (
+                            <span className="inline-flex items-center gap-1 bg-rose-50 text-rose-700 px-2 py-0.5 rounded border border-rose-200">
+                              🔥 {p.sold24h}
+                            </span>
+                          ) : (
+                            <span className="text-zinc-400">—</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-3 text-right text-zinc-600">{p.age}</td>
+                        <td className="py-3 px-3 text-right text-zinc-600">
+                          <div className="font-semibold">{p.reviews.toLocaleString()}</div>
+                          <div className="text-[10px] text-sky-600 font-bold">+{p.reviews30d} in 30d</div>
+                        </td>
+                        <td className="py-3 px-3 text-right font-semibold text-orange-600">
+                          {p.inCart > 0 ? `🛒 ${p.inCart} in cart` : "0"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* MODULE 2: SHOP ANALYZER (EverBee Parity: 5,065,059 shops) */}
+        {/* ========================================================================= */}
+        {activeMainModule === "shops" && (
+          <div className="space-y-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <div className="text-xs font-bold text-[#ea580c] uppercase tracking-wider mb-1">Module 2 · Competitor Storefront Audit</div>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-950 flex items-center gap-2">
+                  Shop Analyzer
+                  <span className="text-xs font-normal text-zinc-500 bg-zinc-100 px-2.5 py-0.5 rounded-full border border-zinc-200">
+                    Shops Analyzed: 5,065,059
+                  </span>
+                </h2>
+                <p className="text-xs text-zinc-600">
+                  Quickly audit all products in any competitor shop, compute rolling daily deltas, and unmask top sellers.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Search shop name or category..."
+                  value={shopSearch}
+                  onChange={(e) => setShopSearch(e.target.value)}
+                  className="px-3 py-1.5 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400 w-60 bg-white"
+                />
+
+                <div className="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg text-xs font-semibold">
+                  <button
+                    type="button"
+                    onClick={() => setShopFilterPreset("all")}
+                    className={`px-2.5 py-1 rounded-md transition-all ${shopFilterPreset === "all" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+                  >
+                    All Shops
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShopFilterPreset("top")}
+                    className={`px-2.5 py-1 rounded-md transition-all ${shopFilterPreset === "top" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+                  >
+                    🏆 Top Performers
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShopFilterPreset("fastest")}
+                    className={`px-2.5 py-1 rounded-md transition-all ${shopFilterPreset === "fastest" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+                  >
+                    📈 Fastest Growing
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShopFilterPreset("digital")}
+                    className={`px-2.5 py-1 rounded-md transition-all ${shopFilterPreset === "digital" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+                  >
+                    📁 Digital Trending
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Contrast Callout: EverBee Lock vs ScoutPro Free */}
+            <div className="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200/80 flex items-center justify-between text-xs text-emerald-900">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span>
+                  <strong>100% Unlocked Data:</strong> EverBee locks Total Revenue, Mo. Sales, and Mo. Revenue behind a \$49/mo paywall. In ScoutPro, all metrics are completely open.
+                </span>
+              </div>
+              <span className="font-bold text-emerald-800 text-[11px]">Zero Paywall Friction</span>
+            </div>
+
+            <div className="scout-surface rounded-2xl overflow-hidden bg-white border border-zinc-200 shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs tnum">
+                  <thead>
+                    <tr className="bg-zinc-50 border-b border-zinc-200 uppercase font-semibold text-zinc-500 text-[11px]">
+                      <th className="py-3 px-4">Shop Name &amp; Category</th>
+                      <th className="py-3 px-3 text-right">Total Sales</th>
+                      <th className="py-3 px-3 text-right">Total Revenue</th>
+                      <th className="py-3 px-3 text-right text-emerald-700 font-bold">Mo. Sales</th>
+                      <th className="py-3 px-3 text-right font-bold">Mo. Revenue</th>
+                      <th className="py-3 px-3 text-right">Shop Age</th>
+                      <th className="py-3 px-3 text-right">Review Score</th>
+                      <th className="py-3 px-3 text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-200/80">
+                    {filteredShops.map((s, idx) => (
+                      <tr key={idx} className="hover:bg-zinc-50/80 transition-colors">
+                        <td className="py-3 px-4 font-medium text-zinc-900">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-7 h-7 rounded-full bg-zinc-200 text-zinc-700 font-bold flex items-center justify-center text-xs">
+                              {s.name.slice(0, 2).toUpperCase()}
+                            </div>
+                            <div>
+                              <div className="font-bold text-zinc-950 flex items-center gap-1.5">
+                                {s.name}
+                                {s.isTop && <span className="text-[10px] text-amber-600">🏆</span>}
+                                {s.isGrowing && <span className="text-[10px] text-emerald-600">⚡</span>}
+                              </div>
+                              <div className="text-[10px] text-zinc-400 font-normal">{s.category}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 px-3 text-right font-semibold text-zinc-900">{s.sales.toLocaleString()}</td>
+                        <td className="py-3 px-3 text-right font-medium text-zinc-600">\${s.rev.toLocaleString()}</td>
+                        <td className="py-3 px-3 text-right font-bold text-emerald-600">~{s.moSales.toLocaleString()}/mo</td>
+                        <td className="py-3 px-3 text-right font-bold text-zinc-900">\${s.moRev.toLocaleString()}/mo</td>
+                        <td className="py-3 px-3 text-right text-zinc-500">{s.age}</td>
+                        <td className="py-3 px-3 text-right font-semibold text-zinc-700">⭐ {s.score}</td>
+                        <td className="py-3 px-3 text-center">
+                          <button
+                            type="button"
+                            onClick={() => alert(`Unmasking bestsellers for ${s.name} using review recency and in-cart velocity...`)}
+                            className="px-2.5 py-1 rounded bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-[11px] font-semibold transition-colors"
+                          >
+                            Unmask
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* MODULE 3: KEYWORD RESEARCH (EverBee Parity: 60,902,071 keywords) */}
+        {/* ========================================================================= */}
+        {activeMainModule === "keywords" && (
+          <div className="space-y-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <div className="text-xs font-bold text-[#ea580c] uppercase tracking-wider mb-1">Module 3 · SEO &amp; Demand Engine</div>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-950 flex items-center gap-2">
+                  Keyword Research
+                  <span className="text-xs font-normal text-zinc-500 bg-zinc-100 px-2.5 py-0.5 rounded-full border border-zinc-200">
+                    Keywords Analyzed: 60,902,071
+                  </span>
+                </h2>
+                <p className="text-xs text-zinc-600">
+                  Improve your SEO, unmask buyer search volume, verify competition barriers, and paste keywords in bulk.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  placeholder="Paste keywords from Excel or Google Sheets..."
+                  value={keywordFilter}
+                  onChange={(e) => setKeywordFilter(e.target.value)}
+                  className="px-3.5 py-1.5 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400 w-72 bg-white"
+                />
+              </div>
+            </div>
+
+            {/* Keyword Input Box (Bulk) */}
+            <div className="p-4 rounded-xl bg-white border border-zinc-200 shadow-sm flex flex-wrap items-center gap-3">
+              <input
+                type="text"
+                placeholder="Enter seed phrase (e.g. wooden bird, budget planner, wedding gift)..."
+                value={keywordInput}
+                onChange={(e) => setKeywordInput(e.target.value)}
+                className="flex-1 px-3 py-2 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400"
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  if (keywordInput.trim()) {
+                    setKeywordFilter(keywordInput.trim());
+                  }
+                }}
+                className="px-4 py-2 rounded-lg bg-zinc-950 text-white font-semibold text-xs hover:bg-zinc-800 transition-colors"
+              >
+                Search 60M Database
+              </button>
+            </div>
+
+            <div className="scout-surface rounded-2xl overflow-hidden bg-white border border-zinc-200 shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs tnum">
+                  <thead>
+                    <tr className="bg-zinc-50 border-b border-zinc-200 uppercase font-semibold text-zinc-500 text-[11px]">
+                      <th className="py-3 px-4">Keyword</th>
+                      <th className="py-3 px-3 text-right">Search Volume</th>
+                      <th className="py-3 px-3 text-right">Competition</th>
+                      <th className="py-3 px-4 text-center">Opportunity Index (Keyword Score)</th>
+                      <th className="py-3 px-3 text-center">13 Tags Format</th>
+                      <th className="py-3 px-3 text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-200/80">
+                    {filteredKeywords.map((k, idx) => (
+                      <tr key={idx} className="hover:bg-zinc-50/80 transition-colors">
+                        <td className="py-3 px-4 font-bold text-zinc-900">
+                          {k.keyword}
+                        </td>
+                        <td className="py-3 px-3 text-right">
+                          <span className="inline-flex items-center gap-1.5 font-semibold text-zinc-900">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            {k.volume.toLocaleString()}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 text-right">
+                          <span className="inline-flex items-center gap-1.5 text-zinc-600">
+                            <span className={`w-1.5 h-1.5 rounded-full ${k.comp > 50000 ? "bg-rose-500" : "bg-amber-500"}`} />
+                            {k.comp.toLocaleString()}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            <div className="w-32 bg-zinc-100 h-2 rounded-full overflow-hidden border border-zinc-200">
+                              <div
+                                className={`h-full rounded-full ${k.score > 4000 ? "bg-emerald-500" : (k.score > 500 ? "bg-blue-500" : "bg-zinc-400")}`}
+                                style={{ width: `${Math.min(100, Math.max(5, (k.score / 7000) * 100))}%` }}
+                              />
+                            </div>
+                            <span className="font-bold text-zinc-800 text-[11px] w-12 text-right">{k.score.toLocaleString()}</span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-3 text-center">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-zinc-100 text-zinc-700 border border-zinc-200">
+                            {k.keyword.length}/20 chars
+                          </span>
+                        </td>
+                        <td className="py-3 px-3 text-center">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText(k.keyword);
+                              alert(`Copied "${k.keyword}" to clipboard!`);
+                            }}
+                            className="px-2.5 py-1 rounded bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-[11px] font-semibold transition-colors"
+                          >
+                            Copy Tag
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* MODULE 4: PROFIT CALCULATOR (EverBee Parity: Standard & Advanced) */}
+        {/* ========================================================================= */}
+        {activeMainModule === "calculator" && (
+          <div className="space-y-8">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <div className="text-xs font-bold text-[#ea580c] uppercase tracking-wider mb-1">Module 4 · True Economics Simulator</div>
+                <h2 className="text-2xl font-bold tracking-tight text-zinc-950 flex items-center gap-2">
+                  Etsy Profit Calculator
+                </h2>
+                <p className="text-xs text-zinc-600">
+                  Calculate your true net profit and bank deposit after deducting all 4 Etsy fees, discounts, and COGS.
+                </p>
+              </div>
+
+              {/* Standard vs Advanced Segmented Switch */}
+              <div className="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setCalcMode("standard")}
+                  className={`px-3 py-1 rounded-md transition-all ${calcMode === "standard" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+                >
+                  Standard
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCalcMode("advanced")}
+                  className={`px-3 py-1 rounded-md transition-all ${calcMode === "advanced" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+                >
+                  Advanced
+                </button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              {/* Inputs Column */}
+              <div className="lg:col-span-6 scout-surface rounded-2xl p-6 bg-white border border-zinc-200 shadow-sm space-y-5">
+                <div className="font-bold text-sm text-zinc-950 border-b border-zinc-100 pb-3">
+                  Order &amp; Cost Inputs
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  <div>
+                    <label className="font-semibold text-zinc-700 block mb-1">Listed Retail Price (\$)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={calcListedPrice}
+                      onChange={(e) => setCalcListedPrice(parseFloat(e.target.value) || 0)}
+                      className="w-full px-3 py-2 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400 font-mono"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="font-semibold text-zinc-700 block mb-1">Shipping Price Charged (\$)</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={calcShippingPrice}
+                        onChange={(e) => setCalcShippingPrice(parseFloat(e.target.value) || 0)}
+                        className="w-full px-3 py-2 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400 font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="font-semibold text-zinc-700 block mb-1">Discount Applied (%)</label>
+                      <input
+                        type="number"
+                        step="1"
+                        value={calcDiscountPct}
+                        onChange={(e) => setCalcDiscountPct(parseFloat(e.target.value) || 0)}
+                        className="w-full px-3 py-2 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400 font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  {calcMode === "advanced" && (
+                    <div className="grid grid-cols-2 gap-3 pt-2 border-t border-zinc-100">
+                      <div>
+                        <label className="font-semibold text-zinc-700 block mb-1">Item Cost (COGS) (\$)</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={calcItemCost}
+                          onChange={(e) => setCalcItemCost(parseFloat(e.target.value) || 0)}
+                          className="w-full px-3 py-2 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400 font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="font-semibold text-zinc-700 block mb-1">Shipping Cost for Order (\$)</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={calcShippingCost}
+                          onChange={(e) => setCalcShippingCost(parseFloat(e.target.value) || 0)}
+                          className="w-full px-3 py-2 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400 font-mono"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-3 pt-2 border-t border-zinc-100">
+                    <div>
+                      <label className="font-semibold text-zinc-700 block mb-1">Etsy Offsite Ads Fee</label>
+                      <select
+                        value={calcOffsiteAds}
+                        onChange={(e) => setCalcOffsiteAds(e.target.value as "none" | "12" | "15")}
+                        className="w-full px-3 py-2 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400 bg-white"
+                      >
+                        <option value="none">None (0% Organic)</option>
+                        <option value="12">12% (High-Volume Seller)</option>
+                        <option value="15">15% (Under \$10k Threshold)</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="font-semibold text-zinc-700 block mb-1">Payment Method</label>
+                      <select
+                        value={calcPaymentMethod}
+                        onChange={(e) => setCalcPaymentMethod(e.target.value as "etsy" | "paypal")}
+                        className="w-full px-3 py-2 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400 bg-white"
+                      >
+                        <option value="etsy">Etsy Payments (3% + \$0.25)</option>
+                        <option value="paypal">Standalone PayPal (3.49% + \$0.49)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Real-Time Breakdown & KPI Cards */}
+              <div className="lg:col-span-6 space-y-5">
+                {/* 4 KPI Summary Cards */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                  <div className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-sm text-center">
+                    <div className="text-zinc-500 text-[10px] uppercase font-bold">Total Revenue</div>
+                    <div className="text-base font-extrabold text-zinc-950 mt-1 font-mono">\${totalCustomerPaid.toFixed(2)}</div>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-white border border-zinc-200 shadow-sm text-center">
+                    <div className="text-zinc-500 text-[10px] uppercase font-bold">Total Fees + Cost</div>
+                    <div className="text-base font-extrabold text-rose-600 mt-1 font-mono">-\${(totalEtsyFees + totalCosts).toFixed(2)}</div>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 shadow-sm text-center">
+                    <div className="text-emerald-800 text-[10px] uppercase font-bold">Net Bank Profit</div>
+                    <div className="text-base font-extrabold text-emerald-700 mt-1 font-mono">\${netProfit.toFixed(2)}</div>
+                  </div>
+                  <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 shadow-sm text-center">
+                    <div className="text-emerald-800 text-[10px] uppercase font-bold">Net Margin</div>
+                    <div className="text-base font-extrabold text-emerald-700 mt-1 font-mono">{netMarginPct}%</div>
+                  </div>
+                </div>
+
+                {/* Itemized Waterfall Ledger */}
+                <div className="scout-surface rounded-2xl p-6 bg-white border border-zinc-200 shadow-sm space-y-4">
+                  <div className="font-bold text-sm text-zinc-950 border-b border-zinc-100 pb-3 flex items-center justify-between">
+                    <span>Itemized Fee Schedule Breakdown</span>
+                    <span className="text-[11px] font-normal text-zinc-400">Exact 2026 Seller Rates</span>
+                  </div>
+
+                  <div className="space-y-2.5 text-xs">
+                    <div className="flex justify-between text-zinc-600">
+                      <span>Effective Customer Price (after {calcDiscountPct}% discount)</span>
+                      <span className="font-mono font-bold text-zinc-900">\${effectiveRetail.toFixed(2)}</span>
+                    </div>
+                    {calcShippingPrice > 0 && (
+                      <div className="flex justify-between text-zinc-600">
+                        <span>Shipping Revenue Collected</span>
+                        <span className="font-mono font-bold text-zinc-900">+\${calcShippingPrice.toFixed(2)}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-rose-600">
+                      <span>Etsy Listing Renewal Fee (4 Months)</span>
+                      <span className="font-mono font-semibold">-\${listingFee.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-rose-600">
+                      <span>Etsy Transaction Fee (6.5% on Item + Shipping)</span>
+                      <span className="font-mono font-semibold">-\${txFee.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-rose-600">
+                      <span>Payment Processing Fee ({calcPaymentMethod === "etsy" ? "3% + $0.25" : "3.49% + $0.49"})</span>
+                      <span className="font-mono font-semibold">-\${procFee.toFixed(2)}</span>
+                    </div>
+                    {adsFee > 0 && (
+                      <div className="flex justify-between text-rose-600">
+                        <span>Etsy Offsite Ads Fee ({calcOffsiteAds}%)</span>
+                        <span className="font-mono font-semibold">-\${adsFee.toFixed(2)}</span>
+                      </div>
+                    )}
+                    {totalCosts > 0 && (
+                      <div className="flex justify-between text-amber-700">
+                        <span>COGS &amp; Shipping Overhead</span>
+                        <span className="font-mono font-semibold">-\${totalCosts.toFixed(2)}</span>
+                      </div>
+                    )}
+                    <div className="pt-3 border-t border-zinc-200 flex justify-between font-bold text-sm text-emerald-700">
+                      <span>Final Net Bank Deposit</span>
+                      <span className="font-mono text-base">\${netProfit.toFixed(2)} ({netMarginPct}%)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* MODULE 5: RESEARCH MCP HUB (Universal Remote MCP Endpoint) */}
+        {/* ========================================================================= */}
+        {activeMainModule === "mcp" && (
+          <div className="space-y-8">
+            <div className="max-w-3xl">
+              <div className="text-xs font-bold text-[#ea580c] uppercase tracking-wider mb-1">Module 5 · Autonomous AI Connection</div>
+              <h2 className="text-3xl font-bold tracking-tight text-zinc-950 mb-3">
+                ScoutPro Universal Research MCP Server
+              </h2>
+              <p className="text-sm text-zinc-600 leading-relaxed">
+                Connect Claude Desktop, Cursor, or your AI agents directly to our open Model Context Protocol server. Turn your AI into an autonomous product researcher with zero monthly subscriptions.
+              </p>
+            </div>
+
+            {/* Quick Client Config Box */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+              <div className="lg:col-span-7 scout-surface rounded-2xl p-6 bg-white border border-zinc-200 shadow-sm">
+                <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-100">
+                  <div className="flex items-center gap-1.5 p-1 bg-zinc-100 rounded-lg">
+                    <button
+                      type="button"
+                      onClick={() => setActiveMcpClient("claude")}
+                      className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                        activeMcpClient === "claude" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+                      }`}
+                    >
+                      Claude Desktop
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveMcpClient("cursor")}
+                      className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                        activeMcpClient === "cursor" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+                      }`}
+                    >
+                      Cursor / Windsurf
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveMcpClient("python")}
+                      className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                        activeMcpClient === "python" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+                      }`}
+                    >
+                      Python Script
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveMcpClient("curl")}
+                      className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                        activeMcpClient === "curl" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+                      }`}
+                    >
+                      cURL
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const text = activeMcpClient === "claude" ? claudeConfig : activeMcpClient === "cursor" ? cursorConfig : activeMcpClient === "python" ? pythonConfig : curlConfig;
+                      handleCopyMcp(text);
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-zinc-950 text-white font-semibold text-xs hover:bg-zinc-800 transition-colors shadow-sm"
+                  >
+                    {copiedMcp ? "Copied!" : "Copy Config"}
+                  </button>
+                </div>
+
+                <div className="rounded-xl bg-[#09090b] text-zinc-200 p-4 font-mono text-xs overflow-x-auto border border-zinc-800 leading-relaxed">
+                  <pre>
+                    {activeMcpClient === "claude" && claudeConfig}
+                    {activeMcpClient === "cursor" && cursorConfig}
+                    {activeMcpClient === "python" && pythonConfig}
+                    {activeMcpClient === "curl" && curlConfig}
+                  </pre>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5 scout-surface rounded-2xl p-6 bg-white border border-zinc-200 shadow-sm space-y-4">
+                <h3 className="font-bold text-base text-zinc-950">How to Setup in 30 Seconds:</h3>
+                <ol className="text-xs text-zinc-600 space-y-2.5 list-decimal pl-4 leading-relaxed">
+                  <li>Open Claude Desktop settings (<code className="bg-zinc-100 px-1 py-0.5 rounded text-zinc-800">claude_desktop_config.json</code>).</li>
+                  <li>Paste the JSON config snippet above.</li>
+                  <li>Restart Claude Desktop. The ScoutPro tools will appear with a hammer icon.</li>
+                  <li>Ask Claude to research any Etsy niche or write compliant tags!</li>
+                </ol>
+
+                <div className="pt-3 border-t border-zinc-100">
+                  <button
+                    type="button"
+                    onClick={handleCopyPrompt}
+                    className="w-full px-3 py-2 rounded-lg bg-zinc-100 hover:bg-zinc-200 text-zinc-900 font-semibold text-xs transition-colors"
+                  >
+                    {copiedPrompt ? "✓ Copied Sample Prompt!" : "Copy Ready-to-Use Claude Prompt"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* 4. The 3 Canonical Views (Real-World Extension Showcase) */}
+      <section id="views" className="py-16 border-t border-black/[0.06] bg-[#fafafa]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-10">
             <h2 className="text-3xl font-bold tracking-tight text-zinc-950 mb-3">
@@ -326,7 +1146,7 @@ print(response.json()["result"])`;
           {/* View Tab 1: Search View */}
           {activeViewTab === "search" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-              <div className="scout-surface rounded-2xl p-5 bg-white max-w-md mx-auto shadow-sm">
+              <div className="scout-surface rounded-2xl p-5 bg-white max-w-md mx-auto shadow-sm border border-zinc-200">
                 <div className="relative aspect-[4/3] rounded-xl bg-gradient-to-br from-emerald-50 via-zinc-100 to-amber-50 border border-zinc-200 flex flex-col items-center justify-center p-6 text-center overflow-hidden">
                   <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-white/90 backdrop-blur-sm text-[10px] font-bold text-zinc-700 border border-zinc-200 shadow-xs">
                     Etsy Bestseller
@@ -349,7 +1169,7 @@ print(response.json()["result"])`;
                     Minimalist ADHD Daily Planner 2026 (Digital Download)
                   </div>
                   <div className="flex items-center gap-2 pt-0.5">
-                    <span className="text-sm font-extrabold text-zinc-950 tnum">$14.99</span>
+                    <span className="text-sm font-extrabold text-zinc-950 tnum">\$14.99</span>
                     <span className="text-xs text-emerald-600 font-semibold">Free instant delivery</span>
                   </div>
                 </div>
@@ -362,9 +1182,10 @@ print(response.json()["result"])`;
                       <span className="font-bold text-emerald-700">$13.12 Net</span>
                       <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-100/60 px-1 py-0.2 rounded">87%</span>
                     </div>
-                    <div className="flex items-center gap-3 text-zinc-600 text-[11px] font-medium">
-                      <span>⚡ 4.8/day</span>
+                    <div className="flex items-center gap-2.5 text-zinc-600 text-[11px] font-medium">
+                      <span className="text-rose-600 font-bold">🔥 14 sold/24h</span>
                       <span className="text-orange-600 font-semibold">🛒 18 in cart</span>
+                      <span>⭐ 831</span>
                       <span>📅 42d</span>
                     </div>
                   </div>
@@ -391,7 +1212,15 @@ print(response.json()["result"])`;
           {/* View Tab 2: Single Listing View */}
           {activeViewTab === "listing" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-              <div className="scout-surface rounded-2xl p-6 bg-white space-y-4">
+              <div className="scout-surface rounded-2xl p-6 bg-white space-y-4 border border-zinc-200 shadow-sm">
+                {/* Live 24h Sales Urgency Banner */}
+                <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200/80 flex items-center justify-between text-xs">
+                  <span className="font-bold text-rose-700 flex items-center gap-1.5">
+                    🔥 18 people bought this in the last 24 hours
+                  </span>
+                  <span className="text-[10px] text-zinc-500 font-semibold">Est. ~504+ sales/mo floor</span>
+                </div>
+
                 <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
                   <div className="text-xs font-bold text-zinc-900 uppercase tracking-wide">13 Backend Tags Inspector</div>
                   <button
@@ -433,11 +1262,12 @@ print(response.json()["result"])`;
                 <div className="text-xs font-bold text-[#ea580c] uppercase tracking-wider">Surface 2: Listing Page Forensic Drawer</div>
                 <h3 className="text-2xl font-bold text-zinc-950">1-Click 13 Tags Copy &amp; Exact Take-Home Cash</h3>
                 <p className="text-sm text-zinc-600 leading-relaxed">
-                  When you open any competitor&apos;s product page, ScoutPro opens an instant forensic drawer showing the exact 13 backend tags they use to rank, pre-checked against Etsy&apos;s 20-character ceiling.
+                  When you open any competitor&apos;s product page, ScoutPro opens an instant forensic drawer showing the exact 13 backend tags they use to rank, pre-checked against Etsy&apos;s 20-character ceiling, and real-time 24h buyer verification.
                 </p>
 
                 <div className="p-4 rounded-xl bg-white border border-zinc-200 text-xs text-zinc-700 space-y-2">
                   <div className="font-bold text-zinc-900">What This View Solves:</div>
+                  <p>• <strong>Live 24h Buyer Proof:</strong> Unmasks exactly how many units sold in the rolling 24-hour conversion window.</p>
                   <p>• <strong>Zero Guesswork:</strong> Steal the exact keywords driving rank for Page 1 bestsellers.</p>
                   <p>• <strong>Etsy Compliance:</strong> Every tag is checked under 20 characters so the Etsy editor never throws silent validation errors.</p>
                   <p>• <strong>Friction Miner:</strong> Surfaces negative reviews so you know what customer complaints to fix in your version.</p>
@@ -449,55 +1279,84 @@ print(response.json()["result"])`;
           {/* View Tab 3: Shop View */}
           {activeViewTab === "shop" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-              <div className="scout-surface rounded-2xl p-6 bg-white space-y-4">
+              <div className="scout-surface rounded-2xl p-6 bg-white space-y-4 border border-zinc-200 shadow-sm">
                 <div className="flex items-center justify-between pb-3 border-b border-zinc-100">
                   <div>
                     <div className="text-xs text-zinc-400">Competitor Storefront</div>
                     <div className="text-sm font-bold text-zinc-950">AestheticStudioUK (14,290 total sales)</div>
                   </div>
                   <span className="px-2.5 py-1 rounded bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold">
-                    Bestsellers Unmasked
+                    Top 5 SKUs Unmasked
                   </span>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between text-xs">
                     <div>
-                      <div className="font-bold text-zinc-900">#1 ADHD Daily Routine Planner</div>
-                      <div className="text-[11px] text-zinc-500">Generates ~480 sales/mo ($6,297 net profit)</div>
+                      <div className="font-bold text-zinc-900 flex items-center gap-1.5">
+                        <span className="text-[#ea580c] font-extrabold">#1</span> ADHD Daily Routine Planner
+                        <span className="text-[10px] text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded border border-rose-200 font-bold">🔥 18 sold/24h</span>
+                      </div>
+                      <div className="text-[11px] text-zinc-500">~480 sales/mo ($6,297 net) · ⭐ 38 rev (30d)</div>
                     </div>
-                    <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">62% of Store Rev</span>
+                    <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[11px]">62% of Store Rev</span>
                   </div>
 
                   <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between text-xs">
                     <div>
-                      <div className="font-bold text-zinc-900">#2 Student Semester Organizer</div>
-                      <div className="text-[11px] text-zinc-500">Generates ~120 sales/mo ($1,574 net profit)</div>
+                      <div className="font-bold text-zinc-900 flex items-center gap-1.5">
+                        <span className="text-[#ea580c] font-extrabold">#2</span> Student Semester Organizer
+                        <span className="text-[10px] text-rose-600 bg-rose-50 px-1.5 py-0.2 rounded border border-rose-200 font-bold">🔥 6 sold/24h</span>
+                      </div>
+                      <div className="text-[11px] text-zinc-500">~120 sales/mo ($1,574 net) · 🛒 11 in cart</div>
                     </div>
-                    <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold">18% of Store Rev</span>
+                    <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold text-[11px]">18% of Store Rev</span>
                   </div>
 
                   <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between text-xs">
                     <div>
-                      <div className="font-bold text-zinc-900">#3 Weekly Meal Prep &amp; Budget Tracker</div>
-                      <div className="text-[11px] text-zinc-500">Generates ~75 sales/mo ($984 net profit)</div>
+                      <div className="font-bold text-zinc-900 flex items-center gap-1.5">
+                        <span className="text-[#ea580c] font-extrabold">#3</span> Weekly Meal Prep &amp; Budget Tracker
+                      </div>
+                      <div className="text-[11px] text-zinc-500">~75 sales/mo ($984 net) · ⭐ 14 rev (30d)</div>
                     </div>
-                    <span className="px-2 py-0.5 rounded bg-zinc-200 text-zinc-800 font-bold">11% of Store Rev</span>
+                    <span className="px-2 py-0.5 rounded bg-zinc-200 text-zinc-800 font-bold text-[11px]">11% of Store Rev</span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between text-xs">
+                    <div>
+                      <div className="font-bold text-zinc-900 flex items-center gap-1.5">
+                        <span className="text-[#ea580c] font-extrabold">#4</span> Minimalist Habit &amp; Goal Tracker
+                      </div>
+                      <div className="text-[11px] text-zinc-500">~45 sales/mo ($590 net) · 🛒 6 in cart</div>
+                    </div>
+                    <span className="px-2 py-0.5 rounded bg-zinc-200 text-zinc-800 font-bold text-[11px]">5% of Store Rev</span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between text-xs">
+                    <div>
+                      <div className="font-bold text-zinc-900 flex items-center gap-1.5">
+                        <span className="text-[#ea580c] font-extrabold">#5</span> ADHD Business &amp; Invoicing Hub
+                      </div>
+                      <div className="text-[11px] text-zinc-500">~30 sales/mo ($393 net) · ⭐ 8 rev (30d)</div>
+                    </div>
+                    <span className="px-2 py-0.5 rounded bg-zinc-200 text-zinc-800 font-bold text-[11px]">4% of Store Rev</span>
                   </div>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <div className="text-xs font-bold text-[#ea580c] uppercase tracking-wider">Surface 3: Shop Bestseller Unmasker</div>
-                <h3 className="text-2xl font-bold text-zinc-950">Find Which 3 Products Drive 80% of Competitor Revenue</h3>
+                <div className="text-xs font-bold text-[#ea580c] uppercase tracking-wider">Surface 3: Shop Top 5 SKUs &amp; 30-Day Velocity Unmasker</div>
+                <h3 className="text-2xl font-bold text-zinc-950">Find Which Top 5 SKUs Drive 85%+ of Competitor Revenue</h3>
                 <p className="text-sm text-zinc-600 leading-relaxed">
-                  Etsy publicly shows a shop&apos;s total sales counter (e.g. 14,290 sales), but hides WHICH listings generated those sales. EverBee and Alura guess based on raw reviews. ScoutPro cross-references review recency (last 30 days) with in-cart demand to uncover the shop&apos;s true revenue engines.
+                  Etsy publicly shows a shop&apos;s total sales counter (e.g. 14,290 sales), but hides WHICH listings generated those sales. EverBee and Alura guess based on raw reviews. ScoutPro cross-references review recency (last 30 days) with in-cart demand and 24h sold velocity to rank the shop&apos;s true Top 5 revenue engines.
                 </p>
 
                 <div className="p-4 rounded-xl bg-white border border-zinc-200 text-xs text-zinc-700 space-y-2">
                   <div className="font-bold text-zinc-900">What This View Solves:</div>
                   <p>• <strong>Stop Wasting Time on Duds:</strong> 80% of a competitor&apos;s 150 listings make 0 sales. Don&apos;t copy their failures.</p>
-                  <p>• <strong>Clone the True Cash Cows:</strong> Pinpoint the top 3 items driving actual bank deposits.</p>
+                  <p>• <strong>Clone the True Cash Cows:</strong> Pinpoint the exact Top 5 items driving actual bank deposits.</p>
+                  <p>• <strong>30-Day Velocity Proof:</strong> Chronological review parsing filters out stale historical sales from 2 years ago.</p>
                 </div>
               </div>
             </div>
@@ -505,278 +1364,8 @@ print(response.json()["result"])`;
         </div>
       </section>
 
-      {/* 4. Product Analytics High-Density Table (EverBee Parity) */}
-      <section id="table" className="py-16 border-b border-black/[0.06] bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tight text-zinc-950 mb-2">
-                Live Product Analytics Table
-              </h2>
-              <p className="text-sm text-zinc-600">
-                Sortable high-density market research benchmarking real product performance with true net margins.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-3">
-              <input
-                type="text"
-                placeholder="Filter by title or shop..."
-                value={searchFilter}
-                onChange={(e) => setSearchFilter(e.target.value)}
-                className="px-3 py-1.5 rounded-lg border border-zinc-200 text-xs text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-400 w-48"
-              />
-
-              <div className="flex items-center gap-1 p-1 bg-zinc-100 rounded-lg text-xs font-semibold">
-                <button
-                  type="button"
-                  onClick={() => setCategoryFilter("all")}
-                  className={`px-2.5 py-1 rounded-md transition-all ${categoryFilter === "all" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
-                >
-                  All
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCategoryFilter("digital")}
-                  className={`px-2.5 py-1 rounded-md transition-all ${categoryFilter === "digital" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
-                >
-                  Digital
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCategoryFilter("physical")}
-                  className={`px-2.5 py-1 rounded-md transition-all ${categoryFilter === "physical" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
-                >
-                  Physical
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div className="scout-surface rounded-2xl overflow-hidden bg-white">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs tnum">
-                <thead>
-                  <tr className="bg-zinc-50 border-b border-zinc-200 uppercase font-semibold text-zinc-500">
-                    <th className="py-3 px-4">Product &amp; Shop</th>
-                    <th className="py-3 px-3">Format</th>
-                    <th className="py-3 px-3 text-right">Price</th>
-                    <th className="py-3 px-3 text-right">Mo. Sales</th>
-                    <th className="py-3 px-3 text-right">Mo. Gross</th>
-                    <th className="py-3 px-3 text-right text-emerald-700 font-bold">Net Cashflow</th>
-                    <th className="py-3 px-3 text-right">Age</th>
-                    <th className="py-3 px-3 text-right">Reviews</th>
-                    <th className="py-3 px-3 text-right">In-Cart</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-200/80">
-                  {filteredProducts.map((p) => (
-                    <tr key={p.id} className="hover:bg-zinc-50/80 transition-colors">
-                      <td className="py-3 px-4 font-medium text-zinc-900 max-w-xs">
-                        <div className="truncate font-bold">{p.title}</div>
-                        <div className="text-[11px] text-zinc-500 font-normal">{p.shop} · {p.shopSales} sales</div>
-                      </td>
-                      <td className="py-3 px-3">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
-                          p.isDigital ? "bg-indigo-50 text-indigo-700 border border-indigo-200" : "bg-amber-50 text-amber-700 border border-amber-200"
-                        }`}>
-                          {p.format}
-                        </span>
-                      </td>
-                      <td className="py-3 px-3 text-right font-bold text-zinc-900">${p.price.toFixed(2)}</td>
-                      <td className="py-3 px-3 text-right font-medium text-zinc-700">~{p.moSales}/mo</td>
-                      <td className="py-3 px-3 text-right text-zinc-600">${p.moGross.toLocaleString()}</td>
-                      <td className="py-3 px-3 text-right font-bold text-emerald-600">
-                        ${p.netTakeHome.toFixed(2)} <span className="text-[10px] text-emerald-700 font-semibold">({p.marginPct}%)</span>
-                      </td>
-                      <td className="py-3 px-3 text-right text-zinc-600">{p.age}</td>
-                      <td className="py-3 px-3 text-right text-zinc-600">{p.reviews.toLocaleString()}</td>
-                      <td className="py-3 px-3 text-right font-semibold text-orange-600">{p.inCart} in cart</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. What Connecting Remote MCP ACTUALLY Does (The Claude Desktop Superpower) */}
-      <section id="claude" className="py-16 border-b border-black/[0.06] bg-[#fafafa]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-12">
-            <h2 className="text-3xl font-bold tracking-tight text-zinc-950 mb-3">
-              Ask Claude About Etsy. Get Real Answers Back.
-            </h2>
-            <p className="text-base text-zinc-600 leading-relaxed">
-              No other tool in the Etsy market has an open Model Context Protocol server. When you connect ScoutPro to Claude Desktop, you turn Claude into an autonomous product research employee that does in 10 seconds what takes 4 hours manually.
-            </p>
-          </div>
-
-          {/* Photorealistic Claude Desktop Chat Mockup */}
-          <div className="scout-surface rounded-2xl p-6 sm:p-8 bg-white max-w-4xl mx-auto mb-12 shadow-sm border border-zinc-200">
-            <div className="flex items-center justify-between pb-4 border-b border-zinc-100 mb-6">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-red-400" />
-                <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                <div className="w-3 h-3 rounded-full bg-green-400" />
-                <span className="ml-3 font-semibold text-xs text-zinc-500">Claude Desktop · Connected to ScoutPro MCP</span>
-              </div>
-              <button
-                type="button"
-                onClick={handleCopyPrompt}
-                className="px-3 py-1.5 rounded-lg bg-zinc-950 text-white font-semibold text-xs hover:bg-zinc-800 transition-colors"
-              >
-                {copiedPrompt ? "✓ Copied to Clipboard!" : "Copy This Exact Prompt"}
-              </button>
-            </div>
-
-            {/* Chat Messages */}
-            <div className="space-y-6 text-sm">
-              {/* User Message */}
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
-                  U
-                </div>
-                <div className="p-4 rounded-2xl bg-zinc-100 text-zinc-900 max-w-2xl leading-relaxed">
-                  Find promising product ideas for digital planners on Etsy, calculate my net cash at $14.99, and give me 13 pre-validated tags under 20 characters.
-                </div>
-              </div>
-
-              {/* Claude Message */}
-              <div className="flex items-start gap-3">
-                <div className="w-7 h-7 rounded-full bg-amber-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
-                  C
-                </div>
-                <div className="space-y-3 flex-1">
-                  {/* Tool Call Badge */}
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    Checked ScoutPro Engine: etsy_keyword_scout &amp; etsy_fee_calculator
-                  </div>
-
-                  <div className="p-5 rounded-2xl bg-zinc-50 border border-zinc-200/80 text-zinc-800 space-y-4 leading-relaxed">
-                    <p>
-                      These looked strongest in live Etsy research right now:
-                    </p>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                      <div className="p-3 rounded-xl bg-white border border-zinc-200">
-                        <div className="font-bold text-zinc-950 text-sm">ADHD Daily Focus Routine</div>
-                        <div className="text-emerald-700 font-semibold mt-0.5">High Demand · Low Competition (1,240 results)</div>
-                        <div className="text-zinc-500 mt-1">28% of Page 1 listings held by new shops (&lt;50 reviews).</div>
-                      </div>
-
-                      <div className="p-3 rounded-xl bg-white border border-zinc-200">
-                        <div className="font-bold text-zinc-950 text-sm">Courier Freight Bookkeeping</div>
-                        <div className="text-emerald-700 font-semibold mt-0.5">Untapped Blue Ocean (412 results)</div>
-                        <div className="text-zinc-500 mt-1">Commercial intent from business operators. High conversion.</div>
-                      </div>
-                    </div>
-
-                    <div className="pt-2">
-                      <div className="font-bold text-zinc-900 text-xs mb-1">Take-Home Cashflow on $14.99:</div>
-                      <p className="text-xs text-zinc-700">
-                        On a $14.99 retail sale, your net bank deposit is <strong className="text-emerald-700">$13.12 (87% pure profit margin)</strong> after deducting Etsy&apos;s $0.20 listing fee, 6.5% transaction fee ($0.97), and payment processing ($0.70).
-                      </p>
-                    </div>
-
-                    <div className="pt-2">
-                      <div className="font-bold text-zinc-900 text-xs mb-1">Your 13 Pre-Validated Tags (All &lt;= 20 Characters):</div>
-                      <div className="flex flex-wrap gap-1.5">
-                        {sampleTags.map((t, i) => (
-                          <span key={i} className="px-2 py-0.5 rounded bg-zinc-200/70 text-zinc-900 text-[11px] font-mono">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Client Config */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-7 scout-surface rounded-2xl p-6 bg-white">
-              <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-100">
-                <div className="flex items-center gap-1.5 p-1 bg-zinc-100 rounded-lg">
-                  <button
-                    type="button"
-                    onClick={() => setActiveMcpClient("claude")}
-                    className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                      activeMcpClient === "claude" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
-                    }`}
-                  >
-                    Claude Desktop
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveMcpClient("cursor")}
-                    className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                      activeMcpClient === "cursor" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
-                    }`}
-                  >
-                    Cursor / Windsurf
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveMcpClient("python")}
-                    className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                      activeMcpClient === "python" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
-                    }`}
-                  >
-                    Python Script
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveMcpClient("curl")}
-                    className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
-                      activeMcpClient === "curl" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
-                    }`}
-                  >
-                    cURL
-                  </button>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    const text = activeMcpClient === "claude" ? claudeConfig : activeMcpClient === "cursor" ? cursorConfig : activeMcpClient === "python" ? pythonConfig : curlConfig;
-                    handleCopyMcp(text);
-                  }}
-                  className="px-3 py-1.5 rounded-lg bg-zinc-950 text-white font-semibold text-xs hover:bg-zinc-800 transition-colors shadow-sm"
-                >
-                  {copiedMcp ? "Copied!" : "Copy Config"}
-                </button>
-              </div>
-
-              <div className="rounded-xl bg-[#09090b] text-zinc-200 p-4 font-mono text-xs overflow-x-auto border border-zinc-800 leading-relaxed">
-                <pre>
-                  {activeMcpClient === "claude" && claudeConfig}
-                  {activeMcpClient === "cursor" && cursorConfig}
-                  {activeMcpClient === "python" && pythonConfig}
-                  {activeMcpClient === "curl" && curlConfig}
-                </pre>
-              </div>
-            </div>
-
-            <div className="lg:col-span-5 scout-surface rounded-2xl p-6 bg-white space-y-4">
-              <h3 className="font-bold text-base text-zinc-950">How to Setup in 30 Seconds:</h3>
-              <ol className="text-xs text-zinc-600 space-y-2.5 list-decimal pl-4 leading-relaxed">
-                <li>Open Claude Desktop settings (<code className="bg-zinc-100 px-1 py-0.5 rounded text-zinc-800">claude_desktop_config.json</code>).</li>
-                <li>Paste the JSON config snippet above.</li>
-                <li>Restart Claude Desktop. The ScoutPro tools will appear with a hammer icon.</li>
-                <li>Ask Claude to research any Etsy niche or write compliant tags!</li>
-              </ol>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Competitive Truth Matrix */}
-      <section id="compare" className="py-16 border-b border-black/[0.06] bg-white">
+      {/* 5. Competitive Truth Matrix */}
+      <section id="compare" className="py-16 border-t border-black/[0.06] bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-12">
             <h2 className="text-3xl font-bold tracking-tight text-zinc-950 mb-3">
@@ -787,7 +1376,7 @@ print(response.json()["result"])`;
             </p>
           </div>
 
-          <div className="scout-surface rounded-2xl overflow-hidden bg-white">
+          <div className="scout-surface rounded-2xl overflow-hidden bg-white border border-zinc-200 shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
@@ -803,20 +1392,20 @@ print(response.json()["result"])`;
                   <tr>
                     <td className="py-4 px-6 font-semibold text-zinc-900">Pricing Model</td>
                     <td className="py-4 px-6 font-bold text-emerald-600">100% Free &amp; Open</td>
-                    <td className="py-4 px-6 text-zinc-500">$29 - $49 / mo</td>
-                    <td className="py-4 px-6 text-zinc-500">$20 - $39 / mo</td>
-                    <td className="py-4 px-6 text-zinc-500">$6 - $20 / mo</td>
+                    <td className="py-4 px-6 text-zinc-500">\$29 - \$49 / mo</td>
+                    <td className="py-4 px-6 text-zinc-500">\$20 - \$39 / mo</td>
+                    <td className="py-4 px-6 text-zinc-500">\$6 - \$20 / mo</td>
                   </tr>
                   <tr>
                     <td className="py-4 px-6 font-semibold text-zinc-900">Universal Remote MCP API</td>
-                    <td className="py-4 px-6 text-emerald-600 font-bold">Native JSON-RPC 2.0</td>
-                    <td className="py-4 px-6 text-zinc-500">Locked behind login</td>
+                    <td className="py-4 px-6 text-emerald-600 font-bold">Native JSON-RPC 2.0 (Open)</td>
+                    <td className="py-4 px-6 text-zinc-500">Paywalled behind login</td>
                     <td className="py-4 px-6 text-rose-500 font-medium">None</td>
                     <td className="py-4 px-6 text-rose-500 font-medium">None</td>
                   </tr>
                   <tr>
                     <td className="py-4 px-6 font-semibold text-zinc-900">Net Take-Home Cashflow Engine</td>
-                    <td className="py-4 px-6 text-emerald-600 font-bold">Real Deductions (6.5% + $0.20 + 3% + Ads)</td>
+                    <td className="py-4 px-6 text-emerald-600 font-bold">Real Deductions (6.5% + \$0.20 + 3% + Ads)</td>
                     <td className="py-4 px-6 text-rose-500 font-medium">Gross Revenue Only</td>
                     <td className="py-4 px-6 text-rose-500 font-medium">Gross Revenue Only</td>
                     <td className="py-4 px-6 text-zinc-500">Manual Calculator</td>
@@ -849,8 +1438,8 @@ print(response.json()["result"])`;
         </div>
       </section>
 
-      {/* 7. Extension Installation Hub */}
-      <section id="install" className="py-16 bg-[#fafafa]">
+      {/* 6. Extension Installation Hub */}
+      <section id="install" className="py-16 bg-[#fafafa] border-t border-black/[0.06]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-12">
             <h2 className="text-3xl font-bold tracking-tight text-zinc-950 mb-3">
@@ -862,7 +1451,7 @@ print(response.json()["result"])`;
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="scout-surface rounded-2xl p-6 bg-white">
+            <div className="scout-surface rounded-2xl p-6 bg-white border border-zinc-200 shadow-sm">
               <div className="w-8 h-8 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-900 flex items-center justify-center font-bold text-sm mb-4">
                 1
               </div>
@@ -880,7 +1469,7 @@ print(response.json()["result"])`;
               </a>
             </div>
 
-            <div className="scout-surface rounded-2xl p-6 bg-white">
+            <div className="scout-surface rounded-2xl p-6 bg-white border border-zinc-200 shadow-sm">
               <div className="w-8 h-8 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-900 flex items-center justify-center font-bold text-sm mb-4">
                 2
               </div>
@@ -890,7 +1479,7 @@ print(response.json()["result"])`;
               </p>
             </div>
 
-            <div className="scout-surface rounded-2xl p-6 bg-white">
+            <div className="scout-surface rounded-2xl p-6 bg-white border border-zinc-200 shadow-sm">
               <div className="w-8 h-8 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-900 flex items-center justify-center font-bold text-sm mb-4">
                 3
               </div>
@@ -903,7 +1492,7 @@ print(response.json()["result"])`;
         </div>
       </section>
 
-      {/* 8. Minimalist Footer */}
+      {/* 7. Minimalist Footer */}
       <footer className="border-t border-black/[0.08] bg-zinc-950 text-zinc-400 py-12 text-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">

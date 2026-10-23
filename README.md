@@ -1,15 +1,15 @@
 # Niche Scout Pro — Live SaaS Web Portal & Universal Remote MCP Server
 
-A standalone Next.js 15+ web application and universal Remote Model Context Protocol (MCP) server engineered for instant 1-click deployment on Vercel.
+A standalone Next.js 15+ web application and universal Remote Model Context Protocol (MCP) server engineered for high-performance cloud deployment.
 
 ---
 
 ## What Is Inside This Project:
 
-1. **High-Converting 2026 SaaS Landing Page (`src/app/page.tsx`):**
-   - Modern Apple/EverBee grade Light SaaS UI.
-   - Interactive live forensics sandbox & 13 compliant tag copy tool.
-   - Live fee & net profit take-home simulator.
+1. **High-Converting 2026 SaaS Dashboard & Landing Page (`src/app/page.tsx`):**
+   - High-density SaaS UI with full competitor parity.
+   - 4 Core Analytics Modules: Product Analytics, Shop Analyzer (5M shops), Keyword Research (60M keywords), Profit Calculator.
+   - Interactive live forensics sandbox and 13 compliant tag copy tool.
    - Remote MCP connection hub with 1-click config snippets for Claude Desktop, Cursor, and Python agents.
    - Feature comparison matrix benchmarking ScoutPro against EverBee and Alura.
 
@@ -24,50 +24,41 @@ A standalone Next.js 15+ web application and universal Remote Model Context Prot
 
 ---
 
-## How to Deploy to Vercel in 60 Seconds:
+## Deployment & Hosting Guide:
 
-### Method A: Deploy via GitHub & Vercel Dashboard (Recommended)
-
-1. Create a new GitHub repository (e.g. `niche-scout-pro-web`).
-2. Push the contents of this folder (`tools/etsy-saas-web`) to your new GitHub repository:
-   ```bash
-   cd tools/etsy-saas-web
-   git init
-   git add .
-   git commit -m "feat: initial commit of Niche Scout Pro live web & MCP server"
-   git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/niche-scout-pro-web.git
-   git push -u origin main
-   ```
-3. Open [Vercel](https://vercel.com/new).
-4. Click **"Import"** next to your new `niche-scout-pro-web` repository.
-5. Keep default settings (Framework: Next.js) and click **"Deploy"**.
-
-**Your live website is now online at `https://your-project.vercel.app`!**
-
----
-
-### Method B: Deploy via Vercel CLI (Instant)
+### Production Build & Launch
 
 ```bash
 cd tools/etsy-saas-web
-npm install -g vercel
-vercel
+pnpm install
+pnpm run build
+pnpm run start
 ```
-Follow the 3 prompts, and Vercel will output your live URL immediately.
+
+### Docker Container Deployment
+
+```dockerfile
+FROM node:22-alpine AS runner
+WORKDIR /app
+COPY . .
+RUN npm install -g pnpm && pnpm install && pnpm run build
+EXPOSE 3000
+CMD ["pnpm", "run", "start"]
+```
 
 ---
 
-## How Any LLM Connects to Your Remote MCP Server:
+## Connecting AI Agents to the Remote MCP Server:
 
-Once deployed to Vercel, any AI agent can connect to your live endpoint:
+Once deployed to your production domain (e.g. `https://scoutpro.app`), any AI agent can connect to your live endpoint:
 
-### 1. Claude Desktop (`claude_desktop_config.json`)
+### 1. Claude Desktop Configuration (`claude_desktop_config.json`):
+
 ```json
 {
   "mcpServers": {
     "etsy-niche-scout": {
-      "url": "https://your-project.vercel.app/api/mcp",
+      "url": "https://scoutpro.app/api/mcp",
       "headers": {
         "x-api-key": "scout_live_your_key"
       }
@@ -76,13 +67,14 @@ Once deployed to Vercel, any AI agent can connect to your live endpoint:
 }
 ```
 
-### 2. Cursor / Windsurf (`.cursor/mcp.json`)
+### 2. Cursor IDE Configuration (`.cursor/mcp.json`):
+
 ```json
 {
   "mcpServers": {
-    "etsy-scout": {
+    "etsy-niche-scout": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "https://your-project.vercel.app/api/mcp", "--header", "x-api-key:scout_live_your_key"]
+      "args": ["-y", "mcp-remote", "https://scoutpro.app/api/mcp", "--header", "x-api-key:scout_live_your_key"]
     }
   }
 }
