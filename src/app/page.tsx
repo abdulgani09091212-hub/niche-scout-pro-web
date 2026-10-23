@@ -13,6 +13,10 @@ export default function HomePage() {
   const [installModalTab, setInstallModalTab] = useState<"standard" | "windows" | "bookmarklet">("standard");
   const [copiedExtensionUrl, setCopiedExtensionUrl] = useState(false);
   const [copiedBookmarklet, setCopiedBookmarklet] = useState(false);
+  const [downloadState, setDownloadState] = useState<"idle" | "downloading" | "downloaded">("idle");
+  const [simDevMode, setSimDevMode] = useState(true);
+  const [showLiveHudPreview, setShowLiveHudPreview] = useState(false);
+  const [openTroubleshoot, setOpenTroubleshoot] = useState<string | null>(null);
 
   // Table sorting / filtering state for Products
   const [searchFilter, setSearchFilter] = useState("");
@@ -237,12 +241,16 @@ export default function HomePage() {
   };
 
   const handleTriggerDownload = () => {
+    setDownloadState("downloading");
     const link = document.createElement("a");
     link.href = "/api/download";
     link.setAttribute("download", "Etsy_Niche_Scout_Pro.zip");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    setTimeout(() => {
+      setDownloadState("downloaded");
+    }, 500);
     setIsInstallModalOpen(true);
   };
 
@@ -388,17 +396,26 @@ print(response.json()["result"])`;
           </nav>
 
           <div className="flex items-center gap-3">
+            {downloadState === "downloaded" && (
+              <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+                ✓ 78 KB Package Saved
+              </span>
+            )}
             <button
               type="button"
               onClick={handleTriggerDownload}
-              className="inline-flex items-center gap-2 text-xs font-semibold px-3.5 py-2 rounded-lg bg-zinc-950 text-white hover:bg-zinc-800 transition-colors shadow-sm cursor-pointer"
+              className={`inline-flex items-center gap-2 text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors shadow-sm cursor-pointer ${
+                downloadState === "downloaded"
+                  ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                  : "bg-zinc-950 text-white hover:bg-zinc-800"
+              }`}
             >
               <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" x2="12" y1="15" y2="3" />
               </svg>
-              Get Extension Free
+              {downloadState === "downloaded" ? "Extension Downloaded (30s Guide)" : "Get Extension Free"}
             </button>
           </div>
         </div>
@@ -1487,21 +1504,25 @@ print(response.json()["result"])`;
                 </div>
                 <h3 className="font-bold text-base text-zinc-900 mb-2">Download Package</h3>
                 <p className="text-xs text-zinc-600 leading-relaxed mb-4">
-                  Download the verified zip package containing all vetted Manifest V3 source files, cleanroom CSP, and minimal permissions.
+                  Verified zip package with live 24h sales forensics, 1-click Windows launcher, offline HTML guide, and cleanroom CSP.
                 </p>
               </div>
               <div className="pt-2">
                 <button
                   type="button"
                   onClick={handleTriggerDownload}
-                  className="w-full text-xs font-semibold px-4 py-2.5 rounded-xl bg-[#ea580c] text-white hover:bg-[#c2410c] transition-colors shadow-sm inline-flex items-center justify-center gap-2 cursor-pointer"
+                  className={`w-full text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors shadow-sm inline-flex items-center justify-center gap-2 cursor-pointer ${
+                    downloadState === "downloaded"
+                      ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                      : "bg-[#ea580c] hover:bg-[#c2410c] text-white"
+                  }`}
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                     <polyline points="7 10 12 15 17 10" />
                     <line x1="12" x2="12" y1="15" y2="3" />
                   </svg>
-                  Download Free ZIP
+                  {downloadState === "downloaded" ? "✓ Downloaded (78 KB ZIP)" : "Download Free ZIP"}
                 </button>
               </div>
             </div>
@@ -1513,7 +1534,7 @@ print(response.json()["result"])`;
                 </div>
                 <h3 className="font-bold text-base text-zinc-900 mb-2">Enable Developer Mode</h3>
                 <p className="text-xs text-zinc-600 leading-relaxed mb-4">
-                  Open <code className="bg-zinc-100 px-1 py-0.5 rounded text-[11px] text-zinc-800">chrome://extensions</code> in your browser and toggle the Developer Mode switch in the top-right corner.
+                  Open <code className="bg-zinc-100 px-1 py-0.5 rounded text-[11px] text-zinc-800">chrome://extensions</code> in a new tab and toggle Developer Mode in the top-right corner.
                 </p>
               </div>
               <div className="pt-2 flex items-center gap-2">
@@ -1532,18 +1553,25 @@ print(response.json()["result"])`;
                 <div className="w-8 h-8 rounded-lg bg-zinc-100 border border-zinc-200 text-zinc-900 flex items-center justify-center font-bold text-sm mb-4">
                   3
                 </div>
-                <h3 className="font-bold text-base text-zinc-900 mb-2">Load Unpacked</h3>
+                <h3 className="font-bold text-base text-zinc-900 mb-2">Load Unpacked &amp; Explore</h3>
                 <p className="text-xs text-zinc-600 leading-relaxed mb-4">
-                  Click &quot;Load unpacked&quot; and select the extracted folder. Navigate to any Etsy search or shop page to see instant forensic badges!
+                  Click &quot;Load unpacked&quot;, choose the unzipped folder, and visit any Etsy search or shop. Real-time sales indicators appear instantly!
                 </p>
               </div>
-              <div className="pt-2">
+              <div className="pt-2 flex flex-col gap-1.5">
                 <button
                   type="button"
                   onClick={() => setIsInstallModalOpen(true)}
-                  className="text-xs font-semibold text-zinc-700 hover:text-zinc-950 underline underline-offset-2 cursor-pointer"
+                  className="text-xs font-semibold text-zinc-900 hover:text-[#ea580c] inline-flex items-center gap-1 cursor-pointer"
                 >
-                  View 30-Second Guide &amp; Launch Options &rarr;
+                  Interactive Visual Guide &amp; Windows Launcher &rarr;
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowLiveHudPreview(true)}
+                  className="text-[11px] text-[#ea580c] font-semibold hover:underline inline-flex items-center gap-1 cursor-pointer"
+                >
+                  ⚡ Preview Live HUD on this page
                 </button>
               </div>
             </div>
@@ -1570,7 +1598,7 @@ print(response.json()["result"])`;
       {/* 8. Interactive 30-Second Quick Setup Modal */}
       {isInstallModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden flex flex-col max-h-[90vh]">
+          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden flex flex-col max-h-[92vh]">
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
               <div className="flex items-center gap-2.5">
@@ -1602,7 +1630,7 @@ print(response.json()["result"])`;
                     : "border-transparent text-zinc-500 hover:text-zinc-800"
                 }`}
               >
-                1. Standard Setup (All Browsers)
+                1. Standard Setup (Interactive Simulator)
               </button>
               <button
                 type="button"
@@ -1632,42 +1660,127 @@ print(response.json()["result"])`;
             <div className="p-6 overflow-y-auto space-y-5 text-xs text-zinc-600">
               {installModalTab === "standard" && (
                 <div className="space-y-4">
-                  <div className="flex items-start gap-3 bg-zinc-50 p-3.5 rounded-xl border border-zinc-200">
-                    <div className="w-6 h-6 rounded-md bg-[#ea580c]/10 text-[#ea580c] flex items-center justify-center font-bold text-xs shrink-0">1</div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-zinc-900 mb-0.5">Download &amp; Extract ZIP</div>
-                      <p className="text-zinc-600 mb-2">Save <code className="bg-zinc-200/70 px-1 py-0.5 rounded text-[11px] text-zinc-900 font-mono">Etsy_Niche_Scout_Pro.zip</code> and extract it anywhere on your computer.</p>
-                      <a
-                        href="/api/download"
-                        download="Etsy_Niche_Scout_Pro.zip"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#ea580c] text-white font-semibold text-xs hover:bg-[#c2410c] transition-colors shadow-sm"
-                      >
-                        ↓ Download ZIP Package (75 KB)
-                      </a>
+                  {/* Interactive Chrome Extensions Toolbar Simulator */}
+                  <div className="p-3.5 bg-zinc-900 text-zinc-200 rounded-xl border border-zinc-800 shadow-inner">
+                    <div className="text-[10px] uppercase font-bold tracking-wider text-zinc-400 mb-2 flex items-center justify-between">
+                      <span>Interactive Chrome Browser Simulator</span>
+                      <span className="text-zinc-500 font-mono text-[9px]">Try clicking the toggle below</span>
                     </div>
-                  </div>
 
-                  <div className="flex items-start gap-3 bg-zinc-50 p-3.5 rounded-xl border border-zinc-200">
-                    <div className="w-6 h-6 rounded-md bg-[#ea580c]/10 text-[#ea580c] flex items-center justify-center font-bold text-xs shrink-0">2</div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-zinc-900 mb-0.5">Open Extensions &amp; Toggle Developer Mode</div>
-                      <p className="text-zinc-600 mb-2">Navigate to <code className="bg-zinc-200/70 px-1 py-0.5 rounded text-[11px] text-zinc-900 font-mono">chrome://extensions</code> (or <code className="bg-zinc-200/70 px-1 py-0.5 rounded text-[11px] text-zinc-900 font-mono">edge://extensions</code>) and switch ON the &quot;Developer mode&quot; toggle in the top-right corner.</p>
+                    {/* Address bar simulation */}
+                    <div className="flex items-center justify-between bg-zinc-950 px-3 py-1.5 rounded-lg border border-zinc-800 text-xs font-mono text-zinc-300 mb-3">
+                      <span className="flex items-center gap-1.5 text-zinc-400">
+                        <svg className="w-3.5 h-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                        chrome://extensions
+                      </span>
                       <button
                         type="button"
                         onClick={handleCopyExtensionUrl}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-white hover:bg-zinc-100 border border-zinc-300 font-semibold text-zinc-700 text-xs transition-colors cursor-pointer"
+                        className="text-[10px] bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2 py-0.5 rounded cursor-pointer transition-colors"
                       >
-                        {copiedExtensionUrl ? "✓ Copied to Clipboard" : "📋 Copy 'chrome://extensions'"}
+                        {copiedExtensionUrl ? "✓ Copied" : "Copy URL"}
                       </button>
+                    </div>
+
+                    {/* Top bar simulation with interactive toggle */}
+                    <div className="flex items-center justify-between py-1 px-1 border-t border-zinc-800/80">
+                      <div className="flex items-center gap-2">
+                        {simDevMode ? (
+                          <div className="flex items-center gap-2 animate-in fade-in duration-200">
+                            <span className="px-2.5 py-1 rounded bg-[#ea580c] text-white font-bold text-[11px] ring-2 ring-[#ea580c]/40 animate-pulse">
+                              Load unpacked
+                            </span>
+                            <span className="text-[10px] text-zinc-400 hidden sm:inline">Pack extension</span>
+                            <span className="text-[10px] text-zinc-400 hidden sm:inline">Update</span>
+                          </div>
+                        ) : (
+                          <span className="text-[11px] text-zinc-500 italic">Enable Developer Mode to reveal &apos;Load unpacked&apos;</span>
+                        )}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-medium text-zinc-300">Developer mode</span>
+                        <button
+                          type="button"
+                          onClick={() => setSimDevMode(!simDevMode)}
+                          className={`w-9 h-5 rounded-full transition-colors relative cursor-pointer ${
+                            simDevMode ? "bg-[#ea580c]" : "bg-zinc-700"
+                          }`}
+                        >
+                          <span
+                            className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${
+                              simDevMode ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    </div>
+
+                    {simDevMode && (
+                      <div className="mt-2.5 pt-2 border-t border-zinc-800/60 text-[11px] text-emerald-400 flex items-center gap-1.5">
+                        <span>✓</span> Developer mode ON: Click <strong>&quot;Load unpacked&quot;</strong> in your real browser and select your unzipped folder.
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 3 Step Action Grid */}
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3 bg-zinc-50 p-3.5 rounded-xl border border-zinc-200">
+                      <div className="w-6 h-6 rounded-md bg-[#ea580c]/10 text-[#ea580c] flex items-center justify-center font-bold text-xs shrink-0">1</div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-zinc-900 mb-0.5">Download &amp; Extract ZIP</div>
+                        <p className="text-zinc-600 mb-2">Save <code className="bg-zinc-200/70 px-1 py-0.5 rounded text-[11px] text-zinc-900 font-mono">Etsy_Niche_Scout_Pro.zip</code> and extract it into a folder.</p>
+                        <a
+                          href="/api/download"
+                          download="Etsy_Niche_Scout_Pro.zip"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#ea580c] text-white font-semibold text-xs hover:bg-[#c2410c] transition-colors shadow-sm"
+                        >
+                          ↓ Download Extension ZIP (78 KB)
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 bg-zinc-50 p-3.5 rounded-xl border border-zinc-200">
+                      <div className="w-6 h-6 rounded-md bg-[#ea580c]/10 text-[#ea580c] flex items-center justify-center font-bold text-xs shrink-0">2</div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-zinc-900 mb-0.5">Open Extensions in a New Tab</div>
+                        <p className="text-zinc-600 mb-2">Copy <code className="bg-zinc-200/70 px-1 py-0.5 rounded text-[11px] text-zinc-900 font-mono">chrome://extensions</code>, open a new tab (<kbd className="bg-zinc-200 px-1 py-0.5 rounded text-[10px]">Ctrl+T</kbd>), paste and press Enter. Switch ON <strong>Developer mode</strong> in the top-right corner.</p>
+                        <button
+                          type="button"
+                          onClick={handleCopyExtensionUrl}
+                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-white hover:bg-zinc-100 border border-zinc-300 font-semibold text-zinc-700 text-xs transition-colors cursor-pointer"
+                        >
+                          {copiedExtensionUrl ? "✓ Copied to Clipboard" : "📋 Copy 'chrome://extensions'"}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3 bg-zinc-50 p-3.5 rounded-xl border border-zinc-200">
+                      <div className="w-6 h-6 rounded-md bg-[#ea580c]/10 text-[#ea580c] flex items-center justify-center font-bold text-xs shrink-0">3</div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-zinc-900 mb-0.5">Click &quot;Load unpacked&quot;</div>
+                        <p className="text-zinc-600">Select the unzipped folder containing <code className="bg-zinc-200/70 px-1 py-0.5 rounded text-[11px] text-zinc-900 font-mono">manifest.json</code>. Navigate to Etsy to see instant live 24h sold data and store SKU forensics!</p>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3 bg-zinc-50 p-3.5 rounded-xl border border-zinc-200">
-                    <div className="w-6 h-6 rounded-md bg-[#ea580c]/10 text-[#ea580c] flex items-center justify-center font-bold text-xs shrink-0">3</div>
-                    <div className="flex-1">
-                      <div className="font-semibold text-zinc-900 mb-0.5">Click &quot;Load unpacked&quot;</div>
-                      <p className="text-zinc-600">Click the button in top-left, select the unzipped folder, and open any Etsy search or shop page. Real-time 24h sold velocity &amp; cart indicators will inject immediately!</p>
-                    </div>
+                  {/* Troubleshooting Collapsible */}
+                  <div className="border border-zinc-200 rounded-xl overflow-hidden bg-zinc-50/50">
+                    <button
+                      type="button"
+                      onClick={() => setOpenTroubleshoot(openTroubleshoot === "manifest" ? null : "manifest")}
+                      className="w-full px-4 py-2.5 text-left text-xs font-semibold text-zinc-800 flex items-center justify-between hover:bg-zinc-100/70 cursor-pointer"
+                    >
+                      <span>❓ Error: &quot;Manifest file is missing or unreadable&quot;?</span>
+                      <span className="text-zinc-400">{openTroubleshoot === "manifest" ? "▲" : "▼"}</span>
+                    </button>
+                    {openTroubleshoot === "manifest" && (
+                      <div className="px-4 pb-3 text-xs text-zinc-600 border-t border-zinc-200/60 pt-2 bg-white">
+                        This happens when you select the outer <code className="bg-zinc-100 px-1 py-0.5 rounded font-mono text-[11px]">.zip</code> file instead of the extracted folder.
+                        <br />
+                        <strong>Fix:</strong> Right-click the zip file, select <em>&quot;Extract All...&quot;</em>, and then in Chrome click <em>&quot;Load unpacked&quot;</em> and pick the unzipped folder containing <code className="bg-zinc-100 px-1 py-0.5 rounded font-mono text-[11px]">manifest.json</code>.
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -1677,18 +1790,18 @@ print(response.json()["result"])`;
                   <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200 text-emerald-900">
                     <div className="font-bold text-sm mb-1">🚀 1-Click Auto Launch for Windows Users</div>
                     <p className="text-xs text-emerald-700">
-                      No need to manually toggle Developer Mode or navigate browser menus. We bundled an automated Windows script directly inside the ZIP.
+                      No need to manually toggle Developer Mode or configure browser menus. We bundled an automated Windows launcher directly inside the ZIP!
                     </p>
                   </div>
 
                   <ol className="list-decimal list-inside space-y-2.5 text-zinc-700 leading-relaxed font-medium">
-                    <li>Extract <code className="bg-zinc-100 px-1 py-0.5 rounded text-zinc-900 font-mono">Etsy_Niche_Scout_Pro.zip</code> to a folder of your choice.</li>
-                    <li>Double-click the file named <code className="bg-zinc-100 px-1 py-0.5 rounded text-[#ea580c] font-bold font-mono">launch.bat</code> inside the extracted folder.</li>
-                    <li>Chrome immediately opens loaded with Niche Scout Pro and navigates directly to Etsy!</li>
+                    <li>Extract <code className="bg-zinc-100 px-1 py-0.5 rounded text-zinc-900 font-mono">Etsy_Niche_Scout_Pro.zip</code> to a folder.</li>
+                    <li>Double-click the file named <code className="bg-zinc-100 px-1 py-0.5 rounded text-[#ea580c] font-bold font-mono">Double-Click-To-Run-On-Windows.bat</code> (or <code className="bg-zinc-100 px-1 py-0.5 rounded font-mono">launch.bat</code>).</li>
+                    <li>Google Chrome immediately launches loaded with Niche Scout Pro and opens directly to Etsy!</li>
                   </ol>
 
                   <div className="bg-zinc-950 text-zinc-300 p-3 rounded-lg font-mono text-[11px] overflow-x-auto border border-zinc-800">
-                    <span className="text-zinc-500">REM Inside launch.bat:</span><br />
+                    <span className="text-zinc-500">REM Inside Double-Click-To-Run-On-Windows.bat:</span><br />
                     chrome.exe --load-extension=&quot;%EXT_DIR%&quot; &quot;https://www.etsy.com&quot;
                   </div>
                 </div>
@@ -1699,7 +1812,7 @@ print(response.json()["result"])`;
                   <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 text-amber-900">
                     <div className="font-bold text-sm mb-1">⚡ Zero-Install Instant Bookmarklet</div>
                     <p className="text-xs text-amber-700">
-                      Want to run on Etsy instantly without touching developer settings or downloading any file? Drag this button straight to your bookmarks bar!
+                      Want to run on Etsy immediately without developer settings or downloading any file? Drag this button straight to your bookmarks bar!
                     </p>
                   </div>
 
@@ -1721,13 +1834,23 @@ print(response.json()["result"])`;
                   </div>
 
                   <div className="flex items-center justify-between gap-2 pt-2 border-t border-zinc-100">
-                    <span className="text-[11px] text-zinc-500">Or copy bookmarklet JavaScript code manually:</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsInstallModalOpen(false);
+                        setShowLiveHudPreview(true);
+                      }}
+                      className="text-xs font-semibold text-[#ea580c] hover:underline cursor-pointer"
+                    >
+                      ⚡ Test Live HUD on this page now &rarr;
+                    </button>
+
                     <button
                       type="button"
                       onClick={handleCopyBookmarklet}
-                      className="text-xs font-semibold text-[#ea580c] hover:underline cursor-pointer"
+                      className="text-xs font-semibold text-zinc-700 hover:text-zinc-950 underline cursor-pointer"
                     >
-                      {copiedBookmarklet ? "✓ Copied Code!" : "Copy Code"}
+                      {copiedBookmarklet ? "✓ Copied Code!" : "Copy JavaScript Code"}
                     </button>
                   </div>
                 </div>
@@ -1747,6 +1870,59 @@ print(response.json()["result"])`;
                 Got It
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* 9. Live Interactive Extension HUD Preview Simulation */}
+      {showLiveHudPreview && (
+        <div className="fixed bottom-6 right-6 z-50 w-80 bg-zinc-950 text-white rounded-2xl p-4 shadow-2xl border border-zinc-800 animate-in slide-in-from-bottom-5 duration-300">
+          <div className="flex items-center justify-between pb-3 border-b border-zinc-800 mb-3">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="font-bold text-xs text-[#ea580c]">Niche Scout Pro HUD</span>
+              <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-mono">Live Demo</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowLiveHudPreview(false)}
+              className="text-zinc-400 hover:text-white text-xs cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="space-y-2 text-xs">
+            <div className="flex items-center justify-between bg-zinc-900 p-2 rounded-lg border border-zinc-800/80">
+              <span className="text-zinc-400">24h Sold Velocity:</span>
+              <span className="font-bold text-emerald-400">🔥 18 sold in last 24h</span>
+            </div>
+            <div className="flex items-center justify-between bg-zinc-900 p-2 rounded-lg border border-zinc-800/80">
+              <span className="text-zinc-400">Active Demand Floor:</span>
+              <span className="font-bold text-amber-400">🛒 14 in buyers&apos; carts</span>
+            </div>
+            <div className="flex items-center justify-between bg-zinc-900 p-2 rounded-lg border border-zinc-800/80">
+              <span className="text-zinc-400">Shop Top 5 Rank:</span>
+              <span className="font-bold text-zinc-200">#1 Revenue Driver</span>
+            </div>
+            <div className="flex items-center justify-between bg-zinc-900 p-2 rounded-lg border border-zinc-800/80">
+              <span className="text-zinc-400">Estimated Monthly Sales:</span>
+              <span className="font-bold text-white">480 units (~$7,195/mo)</span>
+            </div>
+          </div>
+
+          <div className="mt-3 pt-2.5 border-t border-zinc-800 flex items-center justify-between text-[11px]">
+            <span className="text-zinc-400">Ready to use on real Etsy?</span>
+            <button
+              type="button"
+              onClick={() => {
+                setShowLiveHudPreview(false);
+                setIsInstallModalOpen(true);
+              }}
+              className="text-[#ea580c] font-bold hover:underline cursor-pointer"
+            >
+              Get Extension Free &rarr;
+            </button>
           </div>
         </div>
       )}
