@@ -1,9 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function HomePage() {
-  const [activeMainModule, setActiveMainModule] = useState<"products" | "shops" | "keywords" | "calculator" | "mcp">("products");
+  const [activeMainModule, setActiveMainModule] = useState<"products" | "shops" | "keywords" | "calculator" | "mcp" | "pricing">("products");
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("annual");
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<"starter" | "pro" | "agency">("pro");
+  const [userTier, setUserTier] = useState<"starter" | "pro" | "agency">("starter");
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [activeViewTab, setActiveViewTab] = useState<"search" | "listing" | "shop">("search");
   const [activeMcpClient, setActiveMcpClient] = useState<"claude" | "cursor" | "python" | "curl">("claude");
   const [copiedMcp, setCopiedMcp] = useState(false);
@@ -262,6 +270,22 @@ export default function HomePage() {
 
   const bookmarkletCode = `javascript:(function(){if(window.__ens_scout_active){alert('Niche Scout Pro HUD is already active on this page!');return;}window.__ens_scout_active=true;const d=document;const b=d.createElement('div');b.id='ens-instant-hud';b.style.cssText='position:fixed;bottom:24px;right:24px;z-index:999999;background:#09090b;color:#fff;padding:16px 20px;border-radius:14px;box-shadow:0 20px 40px rgba(0,0,0,0.5);font-family:system-ui,-apple-system,sans-serif;font-size:13px;border:1px solid #27272a;max-width:320px;';b.innerHTML='<div style=\"font-weight:700;color:#ea580c;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;\"><span>⚡ Niche Scout Pro HUD</span><span style=\"cursor:pointer;color:#71717a;font-size:14px;\" onclick=\"document.getElementById(\\'ens-instant-hud\\').remove();window.__ens_scout_active=false;\">✕</span></div><p style=\"margin:0 0 10px;color:#a1a1aa;font-size:11px;line-height:1.4;\">Forensic HUD Active. Inspecting 24h sold velocity and in-cart signals on Etsy.</p><div style=\"font-size:11px;color:#10b981;background:rgba(16,185,129,0.1);padding:6px 10px;border-radius:8px;font-weight:500;\">✓ Bookmarklet Mode Running</div>';d.body.appendChild(b);})();`;
 
+  
+  const handleOpenUpgrade = (plan: "starter" | "pro" | "agency" = "pro") => {
+    setSelectedPlan(plan);
+    setPaymentSuccess(false);
+    setIsUpgradeModalOpen(true);
+  };
+
+  const handleSimulateCheckout = () => {
+    setPaymentProcessing(true);
+    setTimeout(() => {
+      setPaymentProcessing(false);
+      setPaymentSuccess(true);
+      setUserTier(selectedPlan);
+    }, 1000);
+  };
+
   const handleCopyBookmarklet = () => {
     navigator.clipboard.writeText(bookmarkletCode);
     setCopiedBookmarklet(true);
@@ -420,6 +444,52 @@ print(response.json()["result"])`;
           </div>
         </div>
       </header>
+
+      {/* Mobile Horizontal Module Switcher (Zero Dead Zones on Touch Devices) */}
+      <div className="flex lg:hidden overflow-x-auto gap-1.5 px-4 py-2 bg-zinc-100 border-b border-zinc-200 text-xs font-semibold whitespace-nowrap no-scrollbar sticky top-16 z-30">
+        <button
+          type="button"
+          onClick={() => setActiveMainModule("products")}
+          className={`px-3 py-1.5 rounded-lg transition-all shrink-0 ${activeMainModule === "products" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+        >
+          Products
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveMainModule("shops")}
+          className={`px-3 py-1.5 rounded-lg transition-all shrink-0 ${activeMainModule === "shops" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+        >
+          Shops (5M)
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveMainModule("keywords")}
+          className={`px-3 py-1.5 rounded-lg transition-all shrink-0 ${activeMainModule === "keywords" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+        >
+          Keywords (60M)
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveMainModule("calculator")}
+          className={`px-3 py-1.5 rounded-lg transition-all shrink-0 ${activeMainModule === "calculator" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600"}`}
+        >
+          Profit Calc
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveMainModule("mcp")}
+          className={`px-3 py-1.5 rounded-lg transition-all shrink-0 ${activeMainModule === "mcp" ? "bg-zinc-900 text-white shadow-sm" : "text-zinc-600"}`}
+        >
+          Research MCP
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveMainModule("pricing")}
+          className={`px-3 py-1.5 rounded-lg transition-all shrink-0 ${activeMainModule === "pricing" ? "bg-[#ea580c] text-white shadow-sm" : "text-zinc-600"}`}
+        >
+          Pricing &amp; Plans
+        </button>
+      </div>
 
       {/* 2. Hero Section (Thesis Viewport) */}
       <section className="pt-12 pb-10 border-b border-black/[0.06] bg-white">
@@ -1133,6 +1203,230 @@ print(response.json()["result"])`;
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        )}
+      
+        {/* ========================================================================= */}
+        {/* MODULE 6: PRICING & SUBSCRIPTION ENGINE (Monetization Suite) */}
+        {/* ========================================================================= */}
+        {activeMainModule === "pricing" && (
+          <div className="space-y-12 animate-in fade-in duration-200">
+            <div className="text-center max-w-3xl mx-auto">
+              <div className="text-xs font-bold text-[#ea580c] uppercase tracking-wider mb-2">
+                Transparent Monetization · Cancel Anytime
+              </div>
+              <h2 className="text-3xl font-extrabold tracking-tight text-zinc-950 sm:text-4xl mb-4">
+                Predictable Pricing to 10x Your Etsy Shop Revenue
+              </h2>
+              <p className="text-sm text-zinc-600 leading-relaxed mb-6">
+                Unmask true 24h sold velocity, unseat top ranking competitors, and access 60,902,071 real keyword metrics with zero restrictions.
+              </p>
+
+              {/* Billing Cycle Toggle Switch */}
+              <div className="inline-flex items-center gap-3 p-1.5 bg-zinc-100 rounded-2xl border border-zinc-200">
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle("monthly")}
+                  className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                    billingCycle === "monthly" ? "bg-white text-zinc-950 shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+                  }`}
+                >
+                  Monthly Billing
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBillingCycle("annual")}
+                  className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                    billingCycle === "annual" ? "bg-zinc-950 text-white shadow-sm" : "text-zinc-600 hover:text-zinc-950"
+                  }`}
+                >
+                  <span>Annual Billing</span>
+                  <span className="px-1.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px] border border-emerald-500/30">
+                    SAVE 35%
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* Pricing Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {/* Plan 1: Free Starter */}
+              <div className="bg-white rounded-2xl border border-zinc-200 p-6 flex flex-col justify-between shadow-xs">
+                <div>
+                  <div className="font-bold text-base text-zinc-900 mb-1">Free Starter</div>
+                  <p className="text-xs text-zinc-500 mb-4">Essential product research for emerging creators.</p>
+                  <div className="text-3xl font-extrabold text-zinc-950 mb-6">
+                    $0 <span className="text-xs font-normal text-zinc-500">/ forever</span>
+                  </div>
+
+                  <ul className="space-y-2.5 text-xs text-zinc-600 mb-6">
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-600 font-bold">✓</span> 10 daily listing inspections
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-600 font-bold">✓</span> Real-time 24h sold velocity badge
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-600 font-bold">✓</span> Standard profit &amp; fee calculator
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-600 font-bold">✓</span> Single listing age inspector
+                    </li>
+                    <li className="flex items-center gap-2 text-zinc-400">
+                      <span>✕</span> 30-day review delta forensics
+                    </li>
+                    <li className="flex items-center gap-2 text-zinc-400">
+                      <span>✕</span> 60M keyword database access
+                    </li>
+                  </ul>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveMainModule("products")}
+                  className="w-full py-2.5 rounded-xl border border-zinc-300 text-zinc-800 font-bold text-xs hover:bg-zinc-50 transition-colors cursor-pointer"
+                >
+                  {userTier === "starter" ? "Current Active Plan" : "Downgrade to Starter"}
+                </button>
+              </div>
+
+              {/* Plan 2: Pro Scout (Featured) */}
+              <div className="bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950 text-white rounded-2xl border-2 border-[#ea580c] p-6 flex flex-col justify-between shadow-xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 bg-[#ea580c] text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-bl-xl tracking-wider">
+                  Most Popular
+                </div>
+
+                <div>
+                  <div className="font-bold text-base text-zinc-100 mb-1 flex items-center gap-2">
+                    <span>Pro Scout</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">
+                      7-Day Trial
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-400 mb-4">Complete intelligence suite for serious sellers.</p>
+                  
+                  <div className="text-3xl font-extrabold text-white mb-6">
+                    {billingCycle === "annual" ? "$12" : "$19"}
+                    <span className="text-xs font-normal text-zinc-400">
+                      / mo {billingCycle === "annual" ? "(billed $149/yr)" : ""}
+                    </span>
+                  </div>
+
+                  <ul className="space-y-2.5 text-xs text-zinc-300 mb-6">
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#ea580c] font-bold">✓</span> <strong>Unlimited</strong> search &amp; listing audits
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#ea580c] font-bold">✓</span> <strong>30-Day Chronological Review Delta</strong>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#ea580c] font-bold">✓</span> <strong>Shop Top 5 Best-Selling SKUs</strong>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#ea580c] font-bold">✓</span> <strong>13 Compliant Tags Formatter</strong> (1-click copy)
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#ea580c] font-bold">✓</span> <strong>60,902,071 Keyword Database</strong>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#ea580c] font-bold">✓</span> Full CSV &amp; Excel data export
+                    </li>
+                  </ul>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenUpgrade("pro")}
+                  className="w-full py-2.5 rounded-xl bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold text-xs transition-colors shadow-md cursor-pointer"
+                >
+                  {userTier === "pro" ? "✓ Pro Plan Active" : "Start 7-Day Free Trial &rarr;"}
+                </button>
+              </div>
+
+              {/* Plan 3: Agency & Scale */}
+              <div className="bg-white rounded-2xl border border-zinc-200 p-6 flex flex-col justify-between shadow-xs">
+                <div>
+                  <div className="font-bold text-base text-zinc-900 mb-1">Agency &amp; Scale</div>
+                  <p className="text-xs text-zinc-500 mb-4">Multi-brand agencies &amp; AI-first e-commerce operators.</p>
+                  
+                  <div className="text-3xl font-extrabold text-zinc-950 mb-6">
+                    {billingCycle === "annual" ? "$33" : "$49"}
+                    <span className="text-xs font-normal text-zinc-500">
+                      / mo {billingCycle === "annual" ? "(billed $399/yr)" : ""}
+                    </span>
+                  </div>
+
+                  <ul className="space-y-2.5 text-xs text-zinc-600 mb-6">
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-600 font-bold">✓</span> Everything in Pro Scout
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-600 font-bold">✓</span> <strong>Multi-Shop Competitor Tracking</strong> (unlimited)
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-600 font-bold">✓</span> <strong>Claude &amp; Cursor AI MCP API Key</strong>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-600 font-bold">✓</span> 5 team member seats
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-600 font-bold">✓</span> Priority live delta scraping queue
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-600 font-bold">✓</span> Dedicated Zoom onboarding &amp; audit
+                    </li>
+                  </ul>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenUpgrade("agency")}
+                  className="w-full py-2.5 rounded-xl bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs transition-colors shadow-sm cursor-pointer"
+                >
+                  {userTier === "agency" ? "✓ Agency Active" : "Upgrade to Agency &rarr;"}
+                </button>
+              </div>
+            </div>
+
+            {/* FAQ Accordion */}
+            <div className="max-w-3xl mx-auto pt-8 border-t border-zinc-200 space-y-3">
+              <h3 className="text-xl font-bold text-zinc-950 text-center mb-6">Frequently Asked Questions</h3>
+
+              {[
+                {
+                  q: "Can I cancel my subscription anytime?",
+                  a: "Yes, 100%. You can cancel in one click from your billing settings at any time. There are zero contracts or cancellation penalties."
+                },
+                {
+                  q: "How does Niche Scout Pro calculate 24h sales and top SKUs?",
+                  a: "We extract live rolling cart indicators, chronological 30-day review deltas (with verified item IDs), and sequential birth dates. This bypasses the misleading listing renewal date trap that distorts tools like EverBee and eRank."
+                },
+                {
+                  q: "Does the Chrome extension work worldwide?",
+                  a: "Yes. Niche Scout Pro supports all global Etsy regions, including United States, United Kingdom, Canada, European Union, and Australia with dynamic currency conversion."
+                },
+                {
+                  q: "Can I use the MCP server with Claude or Cursor?",
+                  a: "Yes. Pro and Agency tiers include standard or remote Model Context Protocol endpoint access so you can query Etsy niche data directly inside Claude Desktop, Cursor, or python agents."
+                }
+              ].map((faq, idx) => (
+                <div key={idx} className="border border-zinc-200 rounded-xl overflow-hidden bg-white">
+                  <button
+                    type="button"
+                    onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
+                    className="w-full p-4 text-left font-bold text-xs text-zinc-900 flex items-center justify-between hover:bg-zinc-50 cursor-pointer"
+                  >
+                    <span>{faq.q}</span>
+                    <span className="text-zinc-400">{activeFaq === idx ? "▲" : "▼"}</span>
+                  </button>
+                  {activeFaq === idx && (
+                    <div className="p-4 pt-0 text-xs text-zinc-600 border-t border-zinc-100 bg-zinc-50/50 leading-relaxed">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -1923,6 +2217,116 @@ print(response.json()["result"])`;
             >
               Get Extension Free &rarr;
             </button>
+          </div>
+        </div>
+      )}
+
+    
+      {/* 10. Interactive Stripe Checkout / Pro Upgrade Modal */}
+      {isUpgradeModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden flex flex-col">
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-[#ea580c] text-white flex items-center justify-center font-bold text-sm">
+                  ⭐
+                </div>
+                <div>
+                  <h3 className="font-bold text-base text-zinc-950">
+                    {selectedPlan === "agency" ? "Upgrade to Agency Tier" : "Upgrade to Pro Scout"}
+                  </h3>
+                  <p className="text-xs text-zinc-500">7-Day Free Trial · Instant 1-Click Activation</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsUpgradeModalOpen(false)}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 hover:text-zinc-700 hover:bg-zinc-200/60 transition-colors cursor-pointer text-base"
+              >
+                ✕
+              </button>
+            </div>
+
+            {paymentSuccess ? (
+              <div className="p-8 text-center space-y-4">
+                <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">
+                  ✓
+                </div>
+                <h4 className="text-xl font-extrabold text-zinc-950">Welcome to {selectedPlan === "agency" ? "Agency Tier" : "Pro Scout"}!</h4>
+                <p className="text-xs text-zinc-600 leading-relaxed">
+                  Your payment was successfully verified. All 14,892 listings, 30-day review delta formulas, and full CSV exports are now unlocked.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsUpgradeModalOpen(false);
+                    setActiveMainModule("products");
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-[#ea580c] text-white font-bold text-xs hover:bg-[#c2410c] transition-colors cursor-pointer"
+                >
+                  Start Exploring All Unlocked Data &rarr;
+                </button>
+              </div>
+            ) : (
+              <div className="p-6 space-y-5 text-xs text-zinc-700">
+                {/* Plan Summary Box */}
+                <div className="bg-zinc-50 p-4 rounded-xl border border-zinc-200 space-y-2">
+                  <div className="flex items-center justify-between font-bold text-sm text-zinc-900">
+                    <span>{selectedPlan === "agency" ? "Agency Tier" : "Pro Scout Plan"}</span>
+                    <span>{billingCycle === "annual" ? (selectedPlan === "agency" ? "$399 / yr" : "$149 / yr") : (selectedPlan === "agency" ? "$49 / mo" : "$19 / mo")}</span>
+                  </div>
+                  <div className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                    <span>✓</span> 7 Days Free Trial included (First charge after 7 days)
+                  </div>
+                </div>
+
+                {/* Simulated Payment Card Input */}
+                <div className="space-y-3">
+                  <label className="block font-semibold text-zinc-800 text-xs">Payment Information (Encrypted via Stripe)</label>
+                  <div className="p-3 bg-zinc-50 rounded-xl border border-zinc-200 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <span className="text-zinc-400 font-mono text-xs">💳</span>
+                      <input
+                        type="text"
+                        readOnly
+                        value="4242 •••• •••• 4242"
+                        className="bg-transparent text-xs font-mono text-zinc-800 w-full focus:outline-none"
+                      />
+                      <span className="text-[10px] bg-zinc-200 text-zinc-600 px-1.5 py-0.5 rounded font-mono">VISA</span>
+                    </div>
+                    <div className="flex items-center justify-between text-zinc-400 text-[11px] border-t border-zinc-200/80 pt-2 font-mono">
+                      <span>Exp: 12/28</span>
+                      <span>CVC: •••</span>
+                      <span>Zip: 10001</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Checkout CTA Button */}
+                <button
+                  type="button"
+                  onClick={handleSimulateCheckout}
+                  disabled={paymentProcessing}
+                  className="w-full py-3 rounded-xl bg-[#ea580c] hover:bg-[#c2410c] text-white font-bold text-xs transition-all shadow-md cursor-pointer flex items-center justify-center gap-2 disabled:opacity-75"
+                >
+                  {paymentProcessing ? (
+                    <>
+                      <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Verifying Card with Stripe...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>🔒 Confirm &amp; Start 7-Day Free Trial</span>
+                    </>
+                  )}
+                </button>
+
+                <p className="text-[10px] text-zinc-400 text-center leading-relaxed">
+                  By clicking Confirm, you authorize recurring billing that you can cancel anytime with 1 click in your account settings.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       )}
