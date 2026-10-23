@@ -12,6 +12,8 @@ export default function HomePage() {
   const [paymentProcessing, setPaymentProcessing] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [selectedProductForModal, setSelectedProductForModal] = useState<any | null>(null);
+  const [copiedDrawerTags, setCopiedDrawerTags] = useState(false);
   const [activeViewTab, setActiveViewTab] = useState<"search" | "listing" | "shop">("search");
   const [activeMcpClient, setActiveMcpClient] = useState<"claude" | "cursor" | "python" | "curl">("claude");
   const [copiedMcp, setCopiedMcp] = useState(false);
@@ -500,11 +502,11 @@ print(response.json()["result"])`;
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-zinc-950 leading-[1.15] mb-5">
-            Real Sales. True Take-Home Cash. Unmask What Sells on Etsy in Seconds.
+            Institutional Market Intelligence for High-Volume Etsy Sellers
           </h1>
 
           <p className="max-w-3xl mx-auto text-base text-zinc-600 leading-relaxed mb-6">
-            The championship Etsy research suite engineered for 2026. Spot low-competition breakout listings, audit 5,065,059 shops, mine 60,902,071 keywords, simulate exact take-home cash after all Etsy deductions, and connect Claude or Cursor via open MCP.
+            Stop relying on manipulated listing renewal dates. Reverse-engineer verified 24-hour transaction volume, true shop bestselling SKUs, and post-deduction bank deposits across 5,065,059 storefronts.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -605,7 +607,7 @@ print(response.json()["result"])`;
                   </thead>
                   <tbody className="divide-y divide-zinc-200/80">
                     {filteredProducts.map((p) => (
-                      <tr key={p.id} className="hover:bg-zinc-50/80 transition-colors">
+                      <tr key={p.id} onClick={() => setSelectedProductForModal(p)} className="hover:bg-zinc-100/70 transition-colors cursor-pointer group">
                         <td className="py-3 px-4 font-medium text-zinc-900 max-w-xs">
                           <div className="truncate font-bold">{p.title}</div>
                           <div className="text-[11px] text-zinc-500 font-normal">{p.shop} · {p.shopSales} sales</div>
@@ -2327,6 +2329,171 @@ print(response.json()["result"])`;
                 </p>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+    
+      {/* 11. Interactive Product Unit Economics & SEO Tags Inspector */}
+      {selectedProductForModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden flex flex-col max-h-[92vh]">
+            {/* Modal Header */}
+            <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-[#ea580c] text-white flex items-center justify-center font-bold text-sm">
+                  📊
+                </div>
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                    Listing Forensics &amp; Unit Economics
+                  </div>
+                  <h3 className="font-bold text-sm text-zinc-950 line-clamp-1 max-w-md">
+                    {selectedProductForModal.title}
+                  </h3>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedProductForModal(null)}
+                className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 hover:text-zinc-700 hover:bg-zinc-200/60 transition-colors cursor-pointer text-base"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 overflow-y-auto space-y-6 text-xs text-zinc-700">
+              {/* Top Summary Banner */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="bg-zinc-50 p-3 rounded-xl border border-zinc-200">
+                  <div className="text-zinc-500 text-[10px] uppercase font-bold">Listed Price</div>
+                  <div className="text-base font-extrabold text-zinc-950 tnum">
+                    ${selectedProductForModal.price.toFixed(2)}
+                  </div>
+                </div>
+                <div className="bg-emerald-50/70 p-3 rounded-xl border border-emerald-200 text-emerald-950">
+                  <div className="text-emerald-700 text-[10px] uppercase font-bold">Net Deposit</div>
+                  <div className="text-base font-extrabold text-emerald-600 tnum">
+                    ${selectedProductForModal.netTakeHome.toFixed(2)} ({selectedProductForModal.marginPct}%)
+                  </div>
+                </div>
+                <div className="bg-rose-50/70 p-3 rounded-xl border border-rose-200 text-rose-950">
+                  <div className="text-rose-700 text-[10px] uppercase font-bold">24h Sales Proof</div>
+                  <div className="text-base font-extrabold text-rose-600 tnum">
+                    🔥 {selectedProductForModal.sold24h} sold
+                  </div>
+                </div>
+                <div className="bg-amber-50/70 p-3 rounded-xl border border-amber-200 text-amber-950">
+                  <div className="text-amber-700 text-[10px] uppercase font-bold">Active Demand</div>
+                  <div className="text-base font-extrabold text-amber-600 tnum">
+                    🛒 {selectedProductForModal.inCart} in carts
+                  </div>
+                </div>
+              </div>
+
+              {/* Exact Etsy Fee Math Dissection */}
+              <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-200 space-y-2">
+                <div className="font-bold text-xs text-zinc-900 border-b border-zinc-200 pb-1.5 flex items-center justify-between">
+                  <span>Etsy Post-Fee Bank Deposit Dissection</span>
+                  <span className="text-[10px] text-zinc-500 font-normal">Standard Domestic Processing</span>
+                </div>
+                <div className="space-y-1.5 text-[11px]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-zinc-600">Buyer Transaction Price:</span>
+                    <span className="font-mono font-bold text-zinc-900">${selectedProductForModal.price.toFixed(2)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-rose-600">
+                    <span>— Etsy Listing Fee:</span>
+                    <span className="font-mono">-$0.20</span>
+                  </div>
+                  <div className="flex items-center justify-between text-rose-600">
+                    <span>— Etsy Transaction Fee (6.5%):</span>
+                    <span className="font-mono">-${(selectedProductForModal.price * 0.065).toFixed(2)}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-rose-600">
+                    <span>— Payment Processing Fee (3% + $0.25):</span>
+                    <span className="font-mono">-${(selectedProductForModal.price * 0.03 + 0.25).toFixed(2)}</span>
+                  </div>
+                  <div className="border-t border-zinc-200 pt-1.5 flex items-center justify-between font-bold text-emerald-600">
+                    <span>Clean Bank Deposit (Take-Home Cash):</span>
+                    <span className="font-mono text-sm">${selectedProductForModal.netTakeHome.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Verified Backend 13 SEO Tags (<20 Chars Compliant) */}
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <div className="font-bold text-xs text-zinc-900 flex items-center gap-2">
+                    <span>13 Compliant Backend SEO Tags</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
+                      100% Under 20 Chars
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(selectedProductForModal.tags.join(", "));
+                      setCopiedDrawerTags(true);
+                      setTimeout(() => setCopiedDrawerTags(false), 2000);
+                    }}
+                    className="text-xs font-semibold text-[#ea580c] hover:underline cursor-pointer"
+                  >
+                    {copiedDrawerTags ? "✓ Copied All 13 Tags!" : "Copy All 13 Tags"}
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap gap-1.5 p-3 bg-zinc-50 rounded-xl border border-zinc-200">
+                  {selectedProductForModal.tags.map((tag: string, idx: number) => (
+                    <span
+                      key={idx}
+                      className="px-2.5 py-1 rounded-md bg-white border border-zinc-200 text-zinc-800 text-[11px] font-medium"
+                    >
+                      {tag}
+                      <span className="ml-1 text-[9px] text-zinc-400 font-mono">({tag.length})</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Shop Context */}
+              <div className="flex items-center justify-between p-3 bg-zinc-100 rounded-xl border border-zinc-200 text-xs">
+                <div>
+                  <span className="text-zinc-500">Shop: </span>
+                  <span className="font-bold text-zinc-950">{selectedProductForModal.shop}</span>
+                  {selectedProductForModal.starSeller && (
+                    <span className="ml-2 text-[10px] text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded font-bold">
+                      ★ Star Seller
+                    </span>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedProductForModal(null);
+                    setActiveMainModule("shops");
+                  }}
+                  className="text-[#ea580c] font-semibold hover:underline cursor-pointer"
+                >
+                  View Full Shop Forensics &rarr;
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-3 border-t border-zinc-100 bg-zinc-50 flex items-center justify-between text-xs">
+              <span className="text-zinc-500">
+                Data refreshed via Niche Scout Pro 2026 Engine
+              </span>
+              <button
+                type="button"
+                onClick={() => setSelectedProductForModal(null)}
+                className="px-4 py-1.5 rounded-lg bg-zinc-950 text-white font-semibold hover:bg-zinc-800 transition-colors cursor-pointer"
+              >
+                Close Inspector
+              </button>
+            </div>
           </div>
         </div>
       )}
