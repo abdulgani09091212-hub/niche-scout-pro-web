@@ -32,15 +32,15 @@ export default function HomePage() {
   const [searchFilter, setSearchFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<"all" | "digital" | "physical">("all");
 
-  // Shop Analyzer State (EverBee Parity: 5,065,059 shops)
+  // Shop Analyzer State (Live Storefront Forensics)
   const [shopSearch, setShopSearch] = useState("");
   const [shopFilterPreset, setShopFilterPreset] = useState<"all" | "top" | "fastest" | "digital">("all");
 
-  // Keyword Research State (EverBee Parity: 60,902,071 keywords)
+  // Keyword Research State (Search Demand & Tag Studio)
   const [keywordInput, setKeywordInput] = useState("");
   const [keywordFilter, setKeywordFilter] = useState("");
 
-  // Profit Calculator State (EverBee Parity: Standard & Advanced)
+  // Profit Calculator State (Unit Economics & Net Take-Home)
   const [calcMode, setCalcMode] = useState<"standard" | "advanced">("standard");
   const [calcListedPrice, setCalcListedPrice] = useState<number>(14.99);
   const [calcShippingPrice, setCalcShippingPrice] = useState<number>(0.00);
@@ -149,7 +149,7 @@ export default function HomePage() {
     }
   ];
 
-  // Sample Shop Analyzer Database (EverBee Parity: 5,065,059 shops)
+  // Benchmark Storefront Profiles (Live-Calibrated Forensics)
   const sampleShops = [
     { name: "OhanaJewelsShop", category: "Physical Jewelry", sales: 483785, rev: 9675700, moSales: 4120, moRev: 82400, age: "117 Mo.", score: 4.83, isTop: true, isGrowing: false, isDigital: false },
     { name: "BloomOwl", category: "Digital Art & SVG", sales: 296921, rev: 1484605, moSales: 3890, moRev: 19450, age: "124 Mo.", score: 4.94, isTop: true, isGrowing: true, isDigital: true },
@@ -163,7 +163,7 @@ export default function HomePage() {
     { name: "AestheticStudioUK", category: "Digital GoodNotes", sales: 14290, rev: 214350, moSales: 980, moRev: 14690, age: "14 Mo.", score: 4.98, isTop: false, isGrowing: true, isDigital: true }
   ];
 
-  // Sample Keyword Database (EverBee Parity: 60,902,071 keywords)
+  // Curated High-Velocity Benchmark Keywords
   const sampleKeywords = [
     { keyword: "wooden bird desktop", volume: 26375, comp: 1420, score: 6240, tags: "wooden bird desktop, bird figurine, hand carved bird", isSafe: true },
     { keyword: "adhd daily routine", volume: 24935, comp: 1240, score: 5890, tags: "adhd planner, adhd daily routine, goodnotes planner", isSafe: true },
@@ -506,7 +506,7 @@ print(response.json()["result"])`;
           </h1>
 
           <p className="max-w-3xl mx-auto text-base text-zinc-600 leading-relaxed mb-6">
-            Stop relying on manipulated listing renewal dates. Reverse-engineer verified 24-hour transaction volume, true shop bestselling SKUs, and post-deduction bank deposits across 5,065,059 storefronts.
+            Stop relying on manipulated listing renewal dates. Reverse-engineer verified 24-hour transaction volume, true shop bestselling SKUs, and post-deduction bank deposits directly on any live Etsy storefront.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -515,14 +515,14 @@ print(response.json()["result"])`;
               onClick={() => setActiveMainModule("shops")}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#ea580c] text-white font-semibold text-xs hover:bg-[#c2410c] transition-all shadow-sm"
             >
-              Explore Shop Analyzer (5M Shops)
+              Explore Storefront Forensics
             </button>
             <button
               type="button"
               onClick={() => setActiveMainModule("keywords")}
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-100 text-zinc-900 border border-zinc-200 font-semibold text-xs hover:bg-zinc-200 transition-all"
             >
-              Mine Keywords (60M Database)
+              Mine High-Demand Keywords
             </button>
             <button
               type="button"
@@ -652,7 +652,7 @@ print(response.json()["result"])`;
         )}
 
         {/* ========================================================================= */}
-        {/* MODULE 2: SHOP ANALYZER (EverBee Parity: 5,065,059 shops) */}
+        {/* MODULE 2: SHOP ANALYZER (Live Storefront Forensics) */}
         {/* ========================================================================= */}
         {activeMainModule === "shops" && (
           <div className="space-y-6">
@@ -662,7 +662,7 @@ print(response.json()["result"])`;
                 <h2 className="text-2xl font-bold tracking-tight text-zinc-950 flex items-center gap-2">
                   Shop Analyzer
                   <span className="text-xs font-normal text-zinc-500 bg-zinc-100 px-2.5 py-0.5 rounded-full border border-zinc-200">
-                    Shops Analyzed: 5,065,059
+                    Live On-Page Forensics · Any Etsy Storefront
                   </span>
                 </h2>
                 <p className="text-xs text-zinc-600">
@@ -717,7 +717,7 @@ print(response.json()["result"])`;
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500" />
                 <span>
-                  <strong>100% Unlocked Data:</strong> EverBee locks Total Revenue, Mo. Sales, and Mo. Revenue behind a \$49/mo paywall. In ScoutPro, all metrics are completely open.
+                  <strong>100% Client-Side Forensics:</strong> EverBee locks estimated metrics behind a \$49/mo paywall. With Niche Scout Pro, live 24h sold velocity, 30-day review deltas, and shop top SKUs run directly in your browser with zero paywall friction.
                 </span>
               </div>
               <span className="font-bold text-emerald-800 text-[11px]">Zero Paywall Friction</span>
@@ -781,7 +781,7 @@ print(response.json()["result"])`;
         )}
 
         {/* ========================================================================= */}
-        {/* MODULE 3: KEYWORD RESEARCH (EverBee Parity: 60,902,071 keywords) */}
+        {/* MODULE 3: KEYWORD RESEARCH (SEO & Demand Engine) */}
         {/* ========================================================================= */}
         {activeMainModule === "keywords" && (
           <div className="space-y-6">
@@ -791,7 +791,7 @@ print(response.json()["result"])`;
                 <h2 className="text-2xl font-bold tracking-tight text-zinc-950 flex items-center gap-2">
                   Keyword Research
                   <span className="text-xs font-normal text-zinc-500 bg-zinc-100 px-2.5 py-0.5 rounded-full border border-zinc-200">
-                    Keywords Analyzed: 60,902,071
+                    Live Search Demand & 13-Tag Studio
                   </span>
                 </h2>
                 <p className="text-xs text-zinc-600">
@@ -828,7 +828,7 @@ print(response.json()["result"])`;
                 }}
                 className="px-4 py-2 rounded-lg bg-zinc-950 text-white font-semibold text-xs hover:bg-zinc-800 transition-colors"
               >
-                Search 60M Database
+                Filter Benchmark Keywords
               </button>
             </div>
 
@@ -1222,7 +1222,7 @@ print(response.json()["result"])`;
                 Predictable Pricing to 10x Your Etsy Shop Revenue
               </h2>
               <p className="text-sm text-zinc-600 leading-relaxed mb-6">
-                Unmask true 24h sold velocity, unseat top ranking competitors, and access 60,902,071 real keyword metrics with zero restrictions.
+                Unmask true 24h sold velocity, reverse-engineer top ranking competitor SKUs, and optimize your 13 backend tags with zero guesswork.
               </p>
 
               {/* Billing Cycle Toggle Switch */}
@@ -1279,7 +1279,7 @@ print(response.json()["result"])`;
                       <span>✕</span> 30-day review delta forensics
                     </li>
                     <li className="flex items-center gap-2 text-zinc-400">
-                      <span>✕</span> 60M keyword database access
+                      <span>✕</span> Advanced multi-shop batch audit
                     </li>
                   </ul>
                 </div>
@@ -1329,7 +1329,7 @@ print(response.json()["result"])`;
                       <span className="text-[#ea580c] font-bold">✓</span> <strong>13 Compliant Tags Formatter</strong> (1-click copy)
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-[#ea580c] font-bold">✓</span> <strong>60,902,071 Keyword Database</strong>
+                      <span className="text-[#ea580c] font-bold">✓</span> <strong>Live Keyword Demand &amp; 13-Tag Studio</strong>
                     </li>
                     <li className="flex items-center gap-2">
                       <span className="text-[#ea580c] font-bold">✓</span> Full CSV &amp; Excel data export
