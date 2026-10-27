@@ -486,6 +486,15 @@ print(response.json()["result"])`;
             </button>
           </nav>
 
+          <div className="hidden xl:flex items-center gap-4 text-xs font-semibold text-zinc-600">
+            <Link href="/about" className="hover:text-zinc-950 transition-colors">
+              About Us
+            </Link>
+            <Link href="/contact" className="hover:text-zinc-950 transition-colors">
+              Contact
+            </Link>
+          </div>
+
           <div className="flex items-center gap-3">
             {downloadState === "downloaded" && (
               <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
@@ -2065,18 +2074,93 @@ print(response.json()["result"])`;
         </div>
       </section>
 
-      {/* 7. Minimalist Footer */}
-      <footer className="border-t border-black/[0.08] bg-zinc-950 text-zinc-400 py-12 text-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-3">
-            <div className="w-6 h-6 rounded bg-[#ea580c] text-white flex items-center justify-center font-bold text-xs">
-              S
+      {/* 7. Comprehensive Corporate & Merchant Verified Footer */}
+      <footer className="border-t border-black/[0.08] bg-zinc-950 text-zinc-400 pt-16 pb-12 text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8">
+            {/* Brand & Mission */}
+            <div className="lg:col-span-5 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-[#ea580c] text-white flex items-center justify-center font-bold text-sm shadow-sm">
+                  S
+                </div>
+                <div>
+                  <span className="font-bold text-base text-zinc-100 block">Niche Scout Pro</span>
+                  <span className="text-[11px] text-zinc-500">E-Commerce Market Intelligence Suite</span>
+                </div>
+              </div>
+              <p className="text-zinc-400 text-xs leading-relaxed max-w-sm">
+                Independent forensic product research terminal, real-time sales velocity estimators, 13-tag SEO generator, and fee-deducted bank profit calculations for digital creators and e-commerce merchants.
+              </p>
+              <div className="flex items-center gap-2 text-[11px] text-zinc-500">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>2026 Engine · Sub-Second Forensics Live</span>
+              </div>
             </div>
-            <span className="font-semibold text-zinc-200">Niche Scout Pro · 2026 Engine</span>
+
+            {/* Quick Navigation */}
+            <div className="lg:col-span-3 space-y-3">
+              <div className="text-xs uppercase font-bold text-zinc-300 tracking-wider">Company &amp; Legal</div>
+              <ul className="space-y-2 text-xs">
+                <li>
+                  <Link href="/about" className="hover:text-white transition-colors">
+                    About Us &amp; Business Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-white transition-colors">
+                    Contact &amp; Customer Support
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/privacy" className="hover:text-white transition-colors">
+                    Privacy Policy (GDPR / CCPA)
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/terms" className="hover:text-white transition-colors">
+                    Terms of Service &amp; Licensing
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Official Registered Business & Merchant Info (Payoneer Verification Anchor) */}
+            <div className="lg:col-span-4 bg-zinc-900/90 rounded-2xl p-5 border border-zinc-800/80 space-y-3.5">
+              <div className="flex items-center gap-2 border-b border-zinc-800 pb-2.5">
+                <span className="text-sm">🏢</span>
+                <span className="font-bold text-zinc-200 text-xs">Verified Business Profile</span>
+              </div>
+              <div className="space-y-2 text-[11px] text-zinc-400">
+                <div>
+                  <span className="text-zinc-500 block uppercase tracking-wider text-[10px] font-bold">Legal Representative &amp; Owner</span>
+                  <span className="font-semibold text-zinc-100">Muhammad Shoiab</span>
+                </div>
+                <div>
+                  <span className="text-zinc-500 block uppercase tracking-wider text-[10px] font-bold">Registered Physical Address</span>
+                  <span className="text-zinc-300 leading-snug block">
+                    Post Office Chak No. 172 TDA, Ameer Kalasra<br />
+                    Tehsil and District Layyah, East<br />
+                    Punjab, Pakistan (Postal Code: 31200)
+                  </span>
+                </div>
+                <div>
+                  <span className="text-zinc-500 block uppercase tracking-wider text-[10px] font-bold">Support &amp; Inquiries</span>
+                  <a href="mailto:support@nichescoutpro.com" className="font-mono text-[#ea580c] hover:underline">
+                    support@nichescoutpro.com
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="text-zinc-500 text-center sm:text-right">
-            Independent forensic product research suite. Not affiliated with Etsy, Inc.
+          <div className="border-t border-zinc-800/80 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-500 text-[11px]">
+            <div>
+              &copy; {new Date().getFullYear()} Niche Scout Pro. Owned and operated by <strong>Muhammad Shoiab</strong>. All rights reserved.
+            </div>
+            <div className="text-zinc-500 text-center sm:text-right">
+              Independent forensic product research suite. Not affiliated with Etsy, Inc.
+            </div>
           </div>
         </div>
       </footer>

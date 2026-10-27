@@ -88,18 +88,39 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section className="space-y-3 text-sm text-zinc-700 leading-relaxed border-t border-zinc-100 pt-6">
-            <h2 className="text-lg font-bold text-zinc-950">5. Contact Information &amp; Data Deletion Requests</h2>
+            <h2 className="text-lg font-bold text-zinc-950">5. Data Controller, Business Identity &amp; Contact Information</h2>
             <p>
-              For privacy inquiries, questions regarding this policy, or assistance with developer disclosures, contact:
+              For privacy inquiries, questions regarding this policy, or assistance with developer disclosures, you may contact the official data controller:
             </p>
-            <div className="bg-zinc-50 p-4 rounded-xl border border-zinc-200 text-xs font-medium space-y-1">
-              <div><strong>Publisher:</strong> Niche Scout Pro Studio</div>
-              <div><strong>Support &amp; Developer Email:</strong> support@scoutpro.app</div>
-              <div><strong>Compliance Jurisdiction:</strong> European Economic Area (EEA) &amp; United States</div>
+            <div className="bg-zinc-50 p-5 rounded-xl border border-zinc-200 text-xs font-medium space-y-2">
+              <div><strong>Business Name:</strong> Niche Scout Pro</div>
+              <div><strong>Legal Representative &amp; Owner:</strong> Muhammad Shoiab</div>
+              <div>
+                <strong>Registered Physical Address:</strong> Post Office Chak No. 172 TDA, Ameer Kalasra, Tehsil and District Layyah, East, Punjab, Pakistan (Postal Code: 31200)
+              </div>
+              <div><strong>Official Website:</strong> https://niche-scout-pro-web.vercel.app</div>
+              <div><strong>Support &amp; Developer Email:</strong> support@nichescoutpro.com</div>
+              <div><strong>Compliance Jurisdiction:</strong> International E-Commerce &amp; Data Protection Standards</div>
             </div>
           </section>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-200 bg-white py-8 text-xs text-zinc-500">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            &copy; {new Date().getFullYear()} Niche Scout Pro. Owned and operated by <strong>Muhammad Shoiab</strong>.
+          </div>
+          <div className="flex items-center gap-4 text-zinc-600 font-medium">
+            <Link href="/" className="hover:text-zinc-950">Home</Link>
+            <Link href="/about" className="hover:text-zinc-950">About Us</Link>
+            <Link href="/contact" className="hover:text-zinc-950">Contact</Link>
+            <Link href="/privacy" className="text-[#ea580c] font-bold">Privacy</Link>
+            <Link href="/terms" className="hover:text-zinc-950">Terms</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

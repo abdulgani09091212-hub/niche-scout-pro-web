@@ -58,8 +58,40 @@ export default function TermsOfServicePage() {
               All sales metrics, in-cart statistics, fee calculations, and projected profit margins provided by Niche Scout Pro are estimations based on public forensic signals and historical review frequencies. Actual store results depend upon product quality, market competition, and merchant fulfillment.
             </p>
           </section>
+
+          <section className="space-y-3 text-sm text-zinc-700 leading-relaxed border-t border-zinc-100 pt-6">
+            <h2 className="text-lg font-bold text-zinc-950">5. Governing Entity &amp; Merchant Information</h2>
+            <p>
+              Niche Scout Pro is published and operated by <strong>Muhammad Shoiab</strong>. For commercial inquiries, legal notices, or merchant account verifications, refer to our official registered details:
+            </p>
+            <div className="bg-zinc-50 p-5 rounded-xl border border-zinc-200 text-xs font-medium space-y-2 mt-2">
+              <div><strong>Business Legal Representative &amp; Owner:</strong> Muhammad Shoiab</div>
+              <div><strong>Operating Platform:</strong> Niche Scout Pro</div>
+              <div>
+                <strong>Physical Business Address:</strong> Post Office Chak No. 172 TDA, Ameer Kalasra, Tehsil and District Layyah, East, Punjab, Pakistan (Postal Code: 31200)
+              </div>
+              <div><strong>Official Website:</strong> https://niche-scout-pro-web.vercel.app</div>
+              <div><strong>Merchant Support:</strong> support@nichescoutpro.com</div>
+            </div>
+          </section>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-200 bg-white py-8 text-xs text-zinc-500">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            &copy; {new Date().getFullYear()} Niche Scout Pro. Owned and operated by <strong>Muhammad Shoiab</strong>.
+          </div>
+          <div className="flex items-center gap-4 text-zinc-600 font-medium">
+            <Link href="/" className="hover:text-zinc-950">Home</Link>
+            <Link href="/about" className="hover:text-zinc-950">About Us</Link>
+            <Link href="/contact" className="hover:text-zinc-950">Contact</Link>
+            <Link href="/privacy" className="hover:text-zinc-950">Privacy</Link>
+            <Link href="/terms" className="text-[#ea580c] font-bold">Terms</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
