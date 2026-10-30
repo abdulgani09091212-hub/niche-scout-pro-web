@@ -175,14 +175,14 @@ export default function ContactPage() {
                   </div>
 
                   <div>
-                    <span className="text-[10px] uppercase font-bold text-zinc-400 block tracking-wider">Official Inquiries &amp; Support Email</span>
+                    <span className="text-[10px] uppercase font-bold text-zinc-400 block tracking-wider">Official Inquiries &amp; Account Email</span>
                     <a
-                      href="mailto:support@nichescoutpro.com"
-                      className="font-mono font-semibold text-[#ea580c] hover:underline block mt-0.5"
+                      href="mailto:babyfeedinglog@gmail.com"
+                      className="font-mono font-semibold text-[#ea580c] hover:underline block mt-0.5 text-sm"
                     >
-                      support@nichescoutpro.com
+                      babyfeedinglog@gmail.com
                     </a>
-                    <span className="text-[10px] text-zinc-500">Secondary: contact@nichescoutpro.com</span>
+                    <span className="text-[10px] text-zinc-500">Corporate Desk: support@nichescoutpro.com</span>
                   </div>
 
                   <div>

@@ -100,11 +100,11 @@ export default function AboutUsPage() {
                 </div>
 
                 <div>
-                  <div className="text-xs uppercase font-bold text-zinc-400 tracking-wider">Corporate &amp; Merchant Support Inquiries</div>
-                  <div className="font-mono font-semibold text-zinc-900 mt-0.5">
-                    support@nichescoutpro.com
+                  <div className="text-xs uppercase font-bold text-zinc-400 tracking-wider">Official Registered Account &amp; Merchant Email</div>
+                  <div className="font-mono font-semibold text-zinc-900 mt-0.5 text-base">
+                    babyfeedinglog@gmail.com
                   </div>
-                  <div className="text-xs text-zinc-500">Alternative: contact@nichescoutpro.com</div>
+                  <div className="text-xs text-zinc-500">Corporate Desk: support@nichescoutpro.com</div>
                 </div>
               </div>
             </div>
