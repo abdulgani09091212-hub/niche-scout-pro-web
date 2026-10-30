@@ -362,7 +362,7 @@ export default function HomePage() {
   const claudeConfig = JSON.stringify({
     mcpServers: {
       "etsy-niche-scout": {
-        url: "https://scoutpro.app/api/mcp"
+        url: "https://niche-scout-pro-web.vercel.app/api/mcp"
       }
     }
   }, null, 2);
@@ -371,14 +371,14 @@ export default function HomePage() {
     mcpServers: {
       "etsy-scout": {
         command: "npx",
-        args: ["-y", "mcp-remote", "https://scoutpro.app/api/mcp"]
+        args: ["-y", "mcp-remote", "https://niche-scout-pro-web.vercel.app/api/mcp"]
       }
     }
   }, null, 2);
 
   const pythonConfig = `import requests
 
-API_URL = "https://scoutpro.app/api/mcp"
+API_URL = "https://niche-scout-pro-web.vercel.app/api/mcp"
 payload = {
     "jsonrpc": "2.0",
     "id": 1,
@@ -391,7 +391,7 @@ payload = {
 response = requests.post(API_URL, json=payload)
 print(response.json()["result"])`;
 
-  const curlConfig = `curl -X POST https://scoutpro.app/api/mcp \\
+  const curlConfig = `curl -X POST https://niche-scout-pro-web.vercel.app/api/mcp \\
   -H "Content-Type: application/json" \\
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"etsy_keyword_scout","arguments":{"query":"wooden bird figurine"}}}'`;
 
@@ -2146,8 +2146,8 @@ print(response.json()["result"])`;
                 </div>
                 <div>
                   <span className="text-zinc-500 block uppercase tracking-wider text-[10px] font-bold">Support &amp; Inquiries</span>
-                  <a href="mailto:support@nichescoutpro.com" className="font-mono text-[#ea580c] hover:underline">
-                    support@nichescoutpro.com
+                  <a href="mailto:babyfeedinglog@gmail.com" className="font-mono text-[#ea580c] hover:underline">
+                    babyfeedinglog@gmail.com
                   </a>
                 </div>
               </div>

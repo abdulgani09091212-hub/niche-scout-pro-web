@@ -138,7 +138,7 @@ export async function GET() {
   return NextResponse.json({
     status: "online",
     server: SERVER_INFO,
-    documentation: "https://scoutpro.app",
+    documentation: "https://niche-scout-pro-web.vercel.app",
     tools: MCP_TOOLS.map((t) => ({ name: t.name, description: t.description })),
   });
 }

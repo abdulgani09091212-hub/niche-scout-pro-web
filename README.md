@@ -50,7 +50,7 @@ CMD ["pnpm", "run", "start"]
 
 ## Connecting AI Agents to the Remote MCP Server:
 
-Once deployed to your production domain (e.g. `https://scoutpro.app`), any AI agent can connect to your live endpoint:
+Once deployed to your production domain (e.g. `https://niche-scout-pro-web.vercel.app`), any AI agent can connect to your live endpoint:
 
 ### 1. Claude Desktop Configuration (`claude_desktop_config.json`):
 
@@ -58,7 +58,7 @@ Once deployed to your production domain (e.g. `https://scoutpro.app`), any AI ag
 {
   "mcpServers": {
     "etsy-niche-scout": {
-      "url": "https://scoutpro.app/api/mcp",
+      "url": "https://niche-scout-pro-web.vercel.app/api/mcp",
       "headers": {
         "x-api-key": "scout_live_your_key"
       }
@@ -74,7 +74,7 @@ Once deployed to your production domain (e.g. `https://scoutpro.app`), any AI ag
   "mcpServers": {
     "etsy-niche-scout": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "https://scoutpro.app/api/mcp", "--header", "x-api-key:scout_live_your_key"]
+      "args": ["-y", "mcp-remote", "https://niche-scout-pro-web.vercel.app/api/mcp", "--header", "x-api-key:scout_live_your_key"]
     }
   }
 }

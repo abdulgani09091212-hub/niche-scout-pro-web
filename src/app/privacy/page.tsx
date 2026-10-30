@@ -99,7 +99,7 @@ export default function PrivacyPolicyPage() {
                 <strong>Registered Physical Address:</strong> Post Office Chak No. 172 TDA, Ameer Kalasra, Tehsil and District Layyah, East, Punjab, Pakistan (Postal Code: 31200)
               </div>
               <div><strong>Official Website:</strong> https://niche-scout-pro-web.vercel.app</div>
-              <div><strong>Support &amp; Developer Email:</strong> support@nichescoutpro.com</div>
+              <div><strong>Support &amp; Developer Email:</strong> babyfeedinglog@gmail.com</div>
               <div><strong>Compliance Jurisdiction:</strong> International E-Commerce &amp; Data Protection Standards</div>
             </div>
           </section>

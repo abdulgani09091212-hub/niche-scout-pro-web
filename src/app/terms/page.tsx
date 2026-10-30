@@ -71,7 +71,7 @@ export default function TermsOfServicePage() {
                 <strong>Physical Business Address:</strong> Post Office Chak No. 172 TDA, Ameer Kalasra, Tehsil and District Layyah, East, Punjab, Pakistan (Postal Code: 31200)
               </div>
               <div><strong>Official Website:</strong> https://niche-scout-pro-web.vercel.app</div>
-              <div><strong>Merchant Support:</strong> support@nichescoutpro.com</div>
+              <div><strong>Merchant Support:</strong> babyfeedinglog@gmail.com</div>
             </div>
           </section>
         </div>

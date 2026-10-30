@@ -104,7 +104,6 @@ export default function AboutUsPage() {
                   <div className="font-mono font-semibold text-zinc-900 mt-0.5 text-base">
                     babyfeedinglog@gmail.com
                   </div>
-                  <div className="text-xs text-zinc-500">Corporate Desk: support@nichescoutpro.com</div>
                 </div>
               </div>
             </div>

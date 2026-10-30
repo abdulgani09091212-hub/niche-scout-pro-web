@@ -182,7 +182,6 @@ export default function ContactPage() {
                     >
                       babyfeedinglog@gmail.com
                     </a>
-                    <span className="text-[10px] text-zinc-500">Corporate Desk: support@nichescoutpro.com</span>
                   </div>
 
                   <div>
