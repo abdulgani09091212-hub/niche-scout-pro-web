@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { BrandLogoMark } from "../components/BrandLogoMark";
 
 export default function HomePage() {
   const [activeMainModule, setActiveMainModule] = useState<"products" | "shops" | "keywords" | "calculator" | "mcp" | "pricing">("products");
@@ -422,13 +423,7 @@ print(response.json()["result"])`;
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-black/[0.08]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#ea580c] text-white flex items-center justify-center font-bold text-sm shadow-sm">
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-                <circle cx="11" cy="11" r="3" fill="#ffffff" />
-              </svg>
-            </div>
+            <BrandLogoMark size={32} />
             <div className="flex items-center gap-2">
               <span className="font-bold text-base tracking-tight text-zinc-950">Niche Scout Pro</span>
               <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 tnum">
@@ -2081,9 +2076,7 @@ print(response.json()["result"])`;
             {/* Brand & Mission */}
             <div className="lg:col-span-5 space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#ea580c] text-white flex items-center justify-center font-bold text-sm shadow-sm">
-                  S
-                </div>
+                <BrandLogoMark size={34} />
                 <div>
                   <span className="font-bold text-base text-zinc-100 block">Niche Scout Pro</span>
                   <span className="text-[11px] text-zinc-500">E-Commerce Market Intelligence Suite</span>
@@ -2172,9 +2165,7 @@ print(response.json()["result"])`;
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#ea580c] text-white flex items-center justify-center font-bold text-sm">
-                  ⚡
-                </div>
+                <BrandLogoMark size={32} />
                 <div>
                   <h3 className="font-bold text-base text-zinc-950">Add Niche Scout Pro to Your Browser</h3>
                   <p className="text-xs text-zinc-500">Fast 30-second setup · No Chrome Web Store sign-in required</p>
@@ -2505,9 +2496,7 @@ print(response.json()["result"])`;
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#ea580c] text-white flex items-center justify-center font-bold text-sm">
-                  ⭐
-                </div>
+                <BrandLogoMark size={32} />
                 <div>
                   <h3 className="font-bold text-base text-zinc-950">
                     {selectedPlan === "agency" ? "Upgrade to Agency Tier" : "Upgrade to Pro Scout"}
@@ -2615,9 +2604,7 @@ print(response.json()["result"])`;
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-zinc-100 flex items-center justify-between bg-zinc-50">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#ea580c] text-white flex items-center justify-center font-bold text-sm">
-                  📊
-                </div>
+                <BrandLogoMark size={32} />
                 <div>
                   <div className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                     Listing Forensics &amp; Unit Economics

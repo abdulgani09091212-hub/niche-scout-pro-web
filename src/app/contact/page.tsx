@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { BrandLogoMark } from "../../components/BrandLogoMark";
 
 export default function ContactPage() {
   const [formSubmitted, setFormSubmitted] = useState(false);
@@ -23,9 +24,7 @@ export default function ContactPage() {
       <header className="border-b border-zinc-200 bg-white/90 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 font-bold text-sm text-zinc-950 hover:opacity-80">
-            <div className="w-8 h-8 rounded-lg bg-[#ea580c] text-white flex items-center justify-center font-bold text-sm shadow-sm">
-              S
-            </div>
+            <BrandLogoMark size={32} />
             <div className="flex flex-col">
               <span className="leading-tight">Niche Scout Pro</span>
               <span className="text-[10px] text-zinc-500 font-normal">Customer &amp; Merchant Support</span>

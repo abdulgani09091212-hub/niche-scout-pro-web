@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogoMark } from "../../components/BrandLogoMark";
 
 export const metadata = {
   title: "Terms of Service — Niche Scout Pro for Etsy",
@@ -12,9 +13,7 @@ export default function TermsOfServicePage() {
       <header className="border-b border-zinc-200 bg-white/90 backdrop-blur-md sticky top-0 z-20">
         <div className="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 font-bold text-sm text-zinc-950 hover:opacity-80">
-            <div className="w-7 h-7 rounded-lg bg-[#ea580c] text-white flex items-center justify-center font-bold text-xs">
-              S
-            </div>
+            <BrandLogoMark size={28} />
             <span>Niche Scout Pro for Etsy</span>
           </Link>
           <Link href="/" className="text-xs font-semibold text-zinc-600 hover:text-zinc-950">
